@@ -1,6 +1,4 @@
-﻿
-using System.Runtime.CompilerServices;
-using AzServiceBusAdministration;
+﻿using AzServiceBusAdministration;
 using Microsoft.Extensions.Configuration;
 
 // Enter a valid Service Bus connection string
@@ -11,7 +9,6 @@ var builder = new ConfigurationBuilder()
     .AddJsonFile("appsettings.json", optional: false);
 
 IConfiguration config = builder.Build();
-
 string ServiceBusConnectionString = config.GetConnectionString("ServiceBus");
 
  var helper = new ManagementHelper(ServiceBusConnectionString);
@@ -101,8 +98,6 @@ do
                     break;
                 case "exit":
                     done = true;
-                    break;
-                default:
                     break;
             }
         }
