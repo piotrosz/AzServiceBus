@@ -18,8 +18,6 @@ var receiver = serviceBusClient.CreateReceiver(QueueName, new ServiceBusReceiver
 
 var messages = receiver.ReceiveMessagesAsync();
 
-
-
 await foreach (var message in messages)
 {
     var text = Encoding.UTF8.GetString(message.Body);
