@@ -13,6 +13,16 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QueueReceiverConsole", "Que
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServiceBusTopicChat", "ServiceBusTopicChat\ServiceBusTopicChat.csproj", "{3F429653-9225-4E72-8DEC-3C0637AB2E1B}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "WorkingWithMessages", "WorkingWithMessages", "{928E438D-CFBE-4B6F-BD41-ACDC3A8AD44A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WorkingWithMessages.MessageEntities", "WorkingWithMessages.MessageEntities\WorkingWithMessages.MessageEntities.csproj", "{D1D349DD-2032-405F-A854-31A683108DF3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WorkingWithMessages.Sender", "WorkingWithMessages.Sender\WorkingWithMessages.Sender.csproj", "{46BD03D6-2F52-4081-8D61-BB26C2617050}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WorkingWithMessages.Receiver", "WorkingWithMessages.Receiver\WorkingWithMessages.Receiver.csproj", "{A6647740-0B81-4720-9B69-ADD29BD39939}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WorkingWithMessages.Config", "WorkingWithMessages.Config\WorkingWithMessages.Config.csproj", "{519C14ED-9F4E-4E7B-A5FE-2AEF1FE176FC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -35,6 +45,22 @@ Global
 		{3F429653-9225-4E72-8DEC-3C0637AB2E1B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3F429653-9225-4E72-8DEC-3C0637AB2E1B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3F429653-9225-4E72-8DEC-3C0637AB2E1B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D1D349DD-2032-405F-A854-31A683108DF3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D1D349DD-2032-405F-A854-31A683108DF3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D1D349DD-2032-405F-A854-31A683108DF3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D1D349DD-2032-405F-A854-31A683108DF3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{46BD03D6-2F52-4081-8D61-BB26C2617050}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{46BD03D6-2F52-4081-8D61-BB26C2617050}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{46BD03D6-2F52-4081-8D61-BB26C2617050}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{46BD03D6-2F52-4081-8D61-BB26C2617050}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A6647740-0B81-4720-9B69-ADD29BD39939}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A6647740-0B81-4720-9B69-ADD29BD39939}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A6647740-0B81-4720-9B69-ADD29BD39939}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A6647740-0B81-4720-9B69-ADD29BD39939}.Release|Any CPU.Build.0 = Release|Any CPU
+		{519C14ED-9F4E-4E7B-A5FE-2AEF1FE176FC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{519C14ED-9F4E-4E7B-A5FE-2AEF1FE176FC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{519C14ED-9F4E-4E7B-A5FE-2AEF1FE176FC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{519C14ED-9F4E-4E7B-A5FE-2AEF1FE176FC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -42,6 +68,10 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{2DB0F23C-8CFD-4D27-AE0C-F55B3D3A9B5C} = {AEB47385-03DA-48BF-A19F-FF06294F6656}
 		{2F8BD3F9-30AE-42C4-8B70-D62E5E76B427} = {AEB47385-03DA-48BF-A19F-FF06294F6656}
+		{D1D349DD-2032-405F-A854-31A683108DF3} = {928E438D-CFBE-4B6F-BD41-ACDC3A8AD44A}
+		{46BD03D6-2F52-4081-8D61-BB26C2617050} = {928E438D-CFBE-4B6F-BD41-ACDC3A8AD44A}
+		{A6647740-0B81-4720-9B69-ADD29BD39939} = {928E438D-CFBE-4B6F-BD41-ACDC3A8AD44A}
+		{519C14ED-9F4E-4E7B-A5FE-2AEF1FE176FC} = {928E438D-CFBE-4B6F-BD41-ACDC3A8AD44A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {BBB8DFFB-EAE9-4D3D-B217-1B21764FD386}
