@@ -12,7 +12,7 @@ namespace TopicsAndSubscriptions
         public TopicSender(string connectionString, string topicName)
         {
             _client = new ServiceBusClient(connectionString);
-            _client.CreateSender(topicName);
+            _sender = _client.CreateSender(topicName);
         }
 
         public async Task SendOrderMessage(Order order)
@@ -43,9 +43,5 @@ namespace TopicsAndSubscriptions
             await _sender.CloseAsync();
             await _client.DisposeAsync();
         }
-
-
-
-
     }
 }

@@ -16,4 +16,10 @@
     <ProjectReference Include="..\WorkingWithMessages.Config\WorkingWithMessages.Config.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="appsettings.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>
