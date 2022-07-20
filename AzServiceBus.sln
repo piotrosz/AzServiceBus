@@ -27,7 +27,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DuplicateDetection", "Dupli
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SubscriptionRules", "SubscriptionRules", "{FCBA0DD2-FCAD-4D8D-8015-523BDEB29C01}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TopicsAndSubscriptions", "TopicsAndSubscriptions\TopicsAndSubscriptions.csproj", "{1112D652-D40A-48D5-8696-C0D623F3D24A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TopicsAndSubscriptions", "TopicsAndSubscriptions\TopicsAndSubscriptions.csproj", "{1112D652-D40A-48D5-8696-C0D623F3D24A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TopicsAndSubscriptions.WireTap", "TopicsAndSubscriptions.WireTap\TopicsAndSubscriptions.WireTap.csproj", "{E156C5CF-9C22-461B-B446-82EB2E4D7E0F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -71,6 +73,10 @@ Global
 		{1112D652-D40A-48D5-8696-C0D623F3D24A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1112D652-D40A-48D5-8696-C0D623F3D24A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1112D652-D40A-48D5-8696-C0D623F3D24A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E156C5CF-9C22-461B-B446-82EB2E4D7E0F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E156C5CF-9C22-461B-B446-82EB2E4D7E0F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E156C5CF-9C22-461B-B446-82EB2E4D7E0F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E156C5CF-9C22-461B-B446-82EB2E4D7E0F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -83,6 +89,7 @@ Global
 		{A6647740-0B81-4720-9B69-ADD29BD39939} = {928E438D-CFBE-4B6F-BD41-ACDC3A8AD44A}
 		{519C14ED-9F4E-4E7B-A5FE-2AEF1FE176FC} = {928E438D-CFBE-4B6F-BD41-ACDC3A8AD44A}
 		{1112D652-D40A-48D5-8696-C0D623F3D24A} = {FCBA0DD2-FCAD-4D8D-8015-523BDEB29C01}
+		{E156C5CF-9C22-461B-B446-82EB2E4D7E0F} = {FCBA0DD2-FCAD-4D8D-8015-523BDEB29C01}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {BBB8DFFB-EAE9-4D3D-B217-1B21764FD386}
