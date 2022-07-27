@@ -23,13 +23,21 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WorkingWithMessages.Receive
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WorkingWithMessages.Config", "WorkingWithMessages.Config\WorkingWithMessages.Config.csproj", "{519C14ED-9F4E-4E7B-A5FE-2AEF1FE176FC}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DuplicateDetection", "DuplicateDetection", "{485CE281-7683-4734-A1DD-2D87AC660B1E}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MessageCorrelation", "MessageCorrelation", "{485CE281-7683-4734-A1DD-2D87AC660B1E}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SubscriptionRules", "SubscriptionRules", "{FCBA0DD2-FCAD-4D8D-8015-523BDEB29C01}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TopicsAndSubscriptions", "TopicsAndSubscriptions\TopicsAndSubscriptions.csproj", "{1112D652-D40A-48D5-8696-C0D623F3D24A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TopicsAndSubscriptions.WireTap", "TopicsAndSubscriptions.WireTap\TopicsAndSubscriptions.WireTap.csproj", "{E156C5CF-9C22-461B-B446-82EB2E4D7E0F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TopicsAndSubscriptions.WireTap", "TopicsAndSubscriptions.WireTap\TopicsAndSubscriptions.WireTap.csproj", "{E156C5CF-9C22-461B-B446-82EB2E4D7E0F}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RfidCheckout.Messages", "RfidCheckout.Messages\RfidCheckout.Messages.csproj", "{CD158104-99FF-4221-A77B-9EC2DDDE29D5}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RfidCheckout.Checkout", "RfidCheckout\RfidCheckout.Checkout.csproj", "{543006CD-C7B1-4C15-929B-72109AEB6108}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RfidCheckout.TagReader", "RfidCheckout.TagReader\RfidCheckout.TagReader.csproj", "{267F604A-2DEB-49C5-B67D-217527885B02}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ErrorHandling", "ErrorHandling", "{3DBAF63A-8CB8-4DDC-8AB0-C17CE0CA34CB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -77,6 +85,18 @@ Global
 		{E156C5CF-9C22-461B-B446-82EB2E4D7E0F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E156C5CF-9C22-461B-B446-82EB2E4D7E0F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E156C5CF-9C22-461B-B446-82EB2E4D7E0F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CD158104-99FF-4221-A77B-9EC2DDDE29D5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CD158104-99FF-4221-A77B-9EC2DDDE29D5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CD158104-99FF-4221-A77B-9EC2DDDE29D5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CD158104-99FF-4221-A77B-9EC2DDDE29D5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{543006CD-C7B1-4C15-929B-72109AEB6108}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{543006CD-C7B1-4C15-929B-72109AEB6108}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{543006CD-C7B1-4C15-929B-72109AEB6108}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{543006CD-C7B1-4C15-929B-72109AEB6108}.Release|Any CPU.Build.0 = Release|Any CPU
+		{267F604A-2DEB-49C5-B67D-217527885B02}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{267F604A-2DEB-49C5-B67D-217527885B02}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{267F604A-2DEB-49C5-B67D-217527885B02}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{267F604A-2DEB-49C5-B67D-217527885B02}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -90,6 +110,9 @@ Global
 		{519C14ED-9F4E-4E7B-A5FE-2AEF1FE176FC} = {928E438D-CFBE-4B6F-BD41-ACDC3A8AD44A}
 		{1112D652-D40A-48D5-8696-C0D623F3D24A} = {FCBA0DD2-FCAD-4D8D-8015-523BDEB29C01}
 		{E156C5CF-9C22-461B-B446-82EB2E4D7E0F} = {FCBA0DD2-FCAD-4D8D-8015-523BDEB29C01}
+		{CD158104-99FF-4221-A77B-9EC2DDDE29D5} = {485CE281-7683-4734-A1DD-2D87AC660B1E}
+		{543006CD-C7B1-4C15-929B-72109AEB6108} = {485CE281-7683-4734-A1DD-2D87AC660B1E}
+		{267F604A-2DEB-49C5-B67D-217527885B02} = {485CE281-7683-4734-A1DD-2D87AC660B1E}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {BBB8DFFB-EAE9-4D3D-B217-1B21764FD386}
