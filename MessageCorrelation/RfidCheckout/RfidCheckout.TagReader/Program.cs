@@ -1,8 +1,8 @@
 ﻿using System.Text;
 using Azure.Messaging.ServiceBus;
+using CommonServiceBusConnectionString;
 using Newtonsoft.Json;
 using RfidCheckout.Messages;
-using WorkingWithMessages.Config;
 using static System.Console;
 
 WriteLine("Tag Reader Console (sends messages)");

@@ -1,14 +1,9 @@
 ﻿using System.Text;
 using Azure.Messaging.ServiceBus;
 using Azure.Messaging.ServiceBus.Administration;
-using Microsoft.Extensions.Configuration;
+using CommonServiceBusConnectionString;
 
-var builder = new ConfigurationBuilder()
-    .SetBasePath(Directory.GetCurrentDirectory())
-    .AddJsonFile("appsettings.json", optional: false);
-
-IConfiguration config = builder.Build();
-string ServiceBusConnectionString = config.GetConnectionString("ServiceBus");
+string ServiceBusConnectionString = Settings.GetConnectionString();
 string TopicName = "chattopic";
 
 Console.WriteLine("Enter your name:");
@@ -35,22 +30,23 @@ if (!await manager.SubscriptionExistsAsync(TopicName, userName))
 var topicClient = new ServiceBusClient(ServiceBusConnectionString);
 var sender = topicClient.CreateSender(TopicName);
 
-var processor = topicClient.CreateProcessor(TopicName, userName);
+await using var processor = topicClient.CreateProcessor(TopicName, userName);
+
 processor.ProcessMessageAsync += MessageHandler;
 processor.ProcessErrorAsync += ErrorHandler;
 
+Console.WriteLine("Start processing...");
+await processor.StartProcessingAsync();
+
+
 try
 {
-    await processor.StartProcessingAsync();
-
     // Send a message to say you are here
-    var helloMessage = new ServiceBusMessage(Encoding.UTF8.GetBytes("Has entered the room..."));
-    helloMessage.ApplicationProperties.Add("UserName", userName);
-    await sender.SendMessageAsync(helloMessage);
+    await sender.SendMessageAsync(CreateHelloMessage(userName));
 
     while (true)
     {
-        string text = Console.ReadLine();
+        string text = Console.ReadLine() ?? "";
         if (text.Equals("exit"))
         {
             break;
@@ -63,9 +59,7 @@ try
     }
 
     // Send a message to say you are leaving
-    var goodbyeMessage = new ServiceBusMessage(Encoding.UTF8.GetBytes("Has left the building..."));
-    goodbyeMessage.ApplicationProperties.Add("UserName", userName);
-    await sender.SendMessageAsync(goodbyeMessage);
+    await sender.SendMessageAsync(CreateGoodbyeMessage(userName));
 }
 finally
 {
@@ -84,4 +78,19 @@ static Task ErrorHandler(ProcessErrorEventArgs args)
 {
     Console.WriteLine(args.Exception.ToString());
     return Task.CompletedTask;
+}
+
+ServiceBusMessage CreateHelloMessage(string? userName)
+{
+    var serviceBusMessage = new ServiceBusMessage(Encoding.UTF8.GetBytes("Has entered the room..."));
+    //serviceBusMessage.Subject = userName;
+    serviceBusMessage.ApplicationProperties.Add("UserName", userName);
+    return serviceBusMessage;
+}
+
+ServiceBusMessage CreateGoodbyeMessage(string? userName)
+{
+    var goodbyeMessage = new ServiceBusMessage(Encoding.UTF8.GetBytes("Has left the building..."));
+    goodbyeMessage.ApplicationProperties.Add("UserName", userName);
+    return goodbyeMessage;
 }

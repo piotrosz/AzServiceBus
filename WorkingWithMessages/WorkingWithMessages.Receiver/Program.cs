@@ -1,11 +1,12 @@
 ﻿using System.Text;
-using WorkingWithMessages.Config;
 using WorkingWithMessages.MessageEntities;
 using Azure.Messaging.ServiceBus;
 using Azure.Messaging.ServiceBus.Administration;
+using CommonServiceBusConnectionString;
 using Newtonsoft.Json;
 
 await using ServiceBusClient QueueClient = new ServiceBusClient(Settings.GetConnectionString());
+const string QueueName = "workingwithmessages";
 
 WriteLine("Receiver Console", ConsoleColor.White);
 
@@ -13,10 +14,10 @@ await RecreateQueueAsync();
 
 //Comment in the appropriate method
 
-//await ReceiveAndProcessText(1);
+await ReceiveAndProcessText(1);
 
 //await ReceiveAndProcessPizzaOrders(1);
-await ReceiveAndProcessPizzaOrders(5);
+//await ReceiveAndProcessPizzaOrders(5);
 //await ReceiveAndProcessPizzaOrders(100);
 
 //await ReceiveAndProcessControlMessage(1);
@@ -37,12 +38,14 @@ async Task ReceiveAndProcessText(int threads)
         MaxAutoLockRenewalDuration = TimeSpan.FromSeconds(30)
     };
     
-    var processor =  QueueClient.CreateProcessor(Settings.QueueName, options);
+    var processor =  QueueClient.CreateProcessor(QueueName, options);
+
     processor.ProcessMessageAsync += ProcessTextMessageAsync;
     processor.ProcessErrorAsync += ProcessErrorHandler;
 
+    Console.WriteLine("Start processing");
     await processor.StartProcessingAsync();
-
+    
     WriteLine("Receiving, hit enter to exit", ConsoleColor.White);
     Console.ReadLine();
     await processor.StopProcessingAsync();
@@ -60,7 +63,7 @@ async Task ReceiveAndProcessControlMessage(int threads)
         MaxAutoLockRenewalDuration = TimeSpan.FromSeconds(30)
     };
     
-    var processor = QueueClient.CreateProcessor(Settings.QueueName, options);
+    var processor = QueueClient.CreateProcessor(QueueName, options);
 
     processor.ProcessMessageAsync += ProcessControlMessageAsync;
     processor.ProcessErrorAsync += ProcessErrorHandler;
@@ -81,7 +84,7 @@ async Task ReceiveAndProcessPizzaOrders(int threads)
         MaxAutoLockRenewalDuration = TimeSpan.FromMinutes(10)
     };
 
-    var processor = QueueClient.CreateProcessor(Settings.QueueName, options);
+    var processor = QueueClient.CreateProcessor(QueueName, options);
     
     processor.ProcessMessageAsync += ProcessPizzaMessageAsync;
     processor.ProcessErrorAsync += ProcessErrorHandler;
@@ -144,7 +147,7 @@ async Task ReceiveAndProcessCharacters(int threads)
         MaxAutoLockRenewalDuration = TimeSpan.FromSeconds(30)
     };
 
-    var processor= QueueClient.CreateProcessor(Settings.QueueName, options);
+    var processor= QueueClient.CreateProcessor(QueueName, options);
 
     processor.ProcessMessageAsync += ProcessCharacterMessageAsync;
     processor.ProcessErrorAsync += ProcessErrorHandler;
@@ -165,15 +168,15 @@ async Task ProcessCharacterMessageAsync(ProcessMessageEventArgs message)
 static async Task RecreateQueueAsync()
 {
     var manager = new ServiceBusAdministrationClient(Settings.GetConnectionString());
-    if (await manager.QueueExistsAsync(Settings.QueueName))
+    if (await manager.QueueExistsAsync(QueueName))
     {
-        WriteLine($"Deleting queue: { Settings.QueueName }...", ConsoleColor.Magenta);
-        await manager.DeleteQueueAsync(Settings.QueueName);
+        WriteLine($"Deleting queue: { QueueName }...", ConsoleColor.Magenta);
+        await manager.DeleteQueueAsync(QueueName);
         WriteLine("Done!", ConsoleColor.Magenta);
     }
 
-    WriteLine($"Creating queue: { Settings.QueueName }...", ConsoleColor.Magenta);
-    await manager.CreateQueueAsync(Settings.QueueName);
+    WriteLine($"Creating queue: { QueueName }...", ConsoleColor.Magenta);
+    await manager.CreateQueueAsync(QueueName);
     WriteLine("Done!", ConsoleColor.Magenta);
 }
 

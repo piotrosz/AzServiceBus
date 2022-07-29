@@ -1,9 +1,9 @@
 ﻿using System.Text;
 using Azure.Messaging.ServiceBus;
 using Azure.Messaging.ServiceBus.Administration;
+using CommonServiceBusConnectionString;
 using Newtonsoft.Json;
 using RfidCheckout.Messages;
-using WorkingWithMessages.Config;
 using static System.Console;
 
 int ReceivedCount = 0;

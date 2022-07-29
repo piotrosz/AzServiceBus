@@ -1,7 +1,7 @@
 ﻿using System.Text;
 using Azure.Messaging.ServiceBus;
 using Azure.Messaging.ServiceBus.Administration;
-using WorkingWithMessages.Config;
+using CommonServiceBusConnectionString;
 using static System.Console;
 
 string ServiceBusConnectionString = Settings.GetConnectionString();
@@ -22,7 +22,7 @@ var options = new CreateSubscriptionOptions(TopicName, subscriptionName)
 var subscription = await managementClient.CreateSubscriptionAsync(options);
 
 await using var serviceBusClient = new ServiceBusClient(ServiceBusConnectionString);
-var receiver = serviceBusClient.CreateReceiver(TopicName, subscriptionName);
+await using var receiver = serviceBusClient.CreateReceiver(TopicName, subscriptionName);
 
 WriteLine($"Receiving on { subscriptionName }");
 WriteLine("Press enter to quit...");
@@ -37,7 +37,7 @@ while(true)
     }
 }
 
-await receiver.CloseAsync();
+// await receiver.CloseAsync();
 
 void InspectMessage(ServiceBusReceivedMessage message)
 {

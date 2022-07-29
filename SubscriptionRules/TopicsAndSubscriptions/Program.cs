@@ -1,5 +1,5 @@
-﻿using TopicsAndSubscriptions;
-using WorkingWithMessages.Config;
+﻿using CommonServiceBusConnectionString;
+using TopicsAndSubscriptions;
 
 string ServiceBusConnectionString = Settings.GetConnectionString();
 string TopicName = "Orders";

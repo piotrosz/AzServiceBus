@@ -1,13 +1,8 @@
 ﻿using System.Text;
 using Azure.Messaging.ServiceBus;
-using Microsoft.Extensions.Configuration;
+using CommonServiceBusConnectionString;
 
-var builder = new ConfigurationBuilder()
-    .SetBasePath(Directory.GetCurrentDirectory())
-    .AddJsonFile("appsettings.json", optional: false);
-
-IConfiguration config = builder.Build();
-string ServiceBusConnectionString = config.GetConnectionString("ServiceBus");
+string ServiceBusConnectionString = Settings.GetConnectionString();
 string QueueName = "demoqueue";
 
 var serviceBusClient = new ServiceBusClient(ServiceBusConnectionString);

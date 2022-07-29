@@ -1,11 +1,9 @@
 ﻿using Microsoft.Extensions.Configuration;
 
-namespace WorkingWithMessages.Config
+namespace CommonServiceBusConnectionString
 {
     public static class Settings
     {
-        public const string QueueName = "workingwithmessages";
-
         public static string GetConnectionString()
         {
             var builder = new ConfigurationBuilder()

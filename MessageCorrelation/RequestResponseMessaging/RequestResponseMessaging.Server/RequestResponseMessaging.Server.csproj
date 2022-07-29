@@ -12,7 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\CommonServiceBusConnectionString\ComonServiceBusConnectionString.csproj" />
+    <ProjectReference Include="..\..\..\CommonServiceBusConnectionString\ComonServiceBusConnectionString.csproj" />
   </ItemGroup>
 
   <ItemGroup>

@@ -9,10 +9,11 @@
 
   <ItemGroup>
     <PackageReference Include="Azure.Messaging.ServiceBus" Version="7.9.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\WorkingWithMessages.Config\WorkingWithMessages.Config.csproj" />
+    <ProjectReference Include="..\..\CommonServiceBusConnectionString\ComonServiceBusConnectionString.csproj" />
   </ItemGroup>
 
   <ItemGroup>

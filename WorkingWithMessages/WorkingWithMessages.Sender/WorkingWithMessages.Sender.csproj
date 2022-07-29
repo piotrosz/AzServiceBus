@@ -13,7 +13,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\WorkingWithMessages.Config\WorkingWithMessages.Config.csproj" />
+    <ProjectReference Include="..\..\CommonServiceBusConnectionString\ComonServiceBusConnectionString.csproj" />
+    <ProjectReference Include="..\WorkingWithMessages.MessageEntities\WorkingWithMessages.MessageEntities.csproj" />
   </ItemGroup>
 
   <ItemGroup>
