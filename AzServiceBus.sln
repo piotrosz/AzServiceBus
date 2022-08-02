@@ -45,6 +45,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QueueReceiverConsole", "Que
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QueueSenderConsole", "QueueSendReceive\QueueSenderConsole\QueueSenderConsole.csproj", "{0641604B-DC4C-43C6-97AC-CC8035B1CCE9}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DeadLetterReceiver", "ErrorHandling\DeadLetterReceiver\DeadLetterReceiver.csproj", "{B82E1FB4-DF85-4817-9E8F-104D5FE4AF4D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -107,6 +109,10 @@ Global
 		{0641604B-DC4C-43C6-97AC-CC8035B1CCE9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0641604B-DC4C-43C6-97AC-CC8035B1CCE9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0641604B-DC4C-43C6-97AC-CC8035B1CCE9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B82E1FB4-DF85-4817-9E8F-104D5FE4AF4D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B82E1FB4-DF85-4817-9E8F-104D5FE4AF4D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B82E1FB4-DF85-4817-9E8F-104D5FE4AF4D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B82E1FB4-DF85-4817-9E8F-104D5FE4AF4D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -126,6 +132,7 @@ Global
 		{044BD40D-6FB1-4A4E-9F0B-D9A628BDD47A} = {928E438D-CFBE-4B6F-BD41-ACDC3A8AD44A}
 		{21ED5EFC-FD26-43E8-B75C-F7BC939EA557} = {AEB47385-03DA-48BF-A19F-FF06294F6656}
 		{0641604B-DC4C-43C6-97AC-CC8035B1CCE9} = {AEB47385-03DA-48BF-A19F-FF06294F6656}
+		{B82E1FB4-DF85-4817-9E8F-104D5FE4AF4D} = {3DBAF63A-8CB8-4DDC-8AB0-C17CE0CA34CB}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {BBB8DFFB-EAE9-4D3D-B217-1B21764FD386}
