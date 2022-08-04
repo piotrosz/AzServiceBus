@@ -24,7 +24,7 @@ Utils.WriteLine($"Dead letter path: {processor.EntityPath}", ConsoleColor.Cyan);
 processor.ProcessMessageAsync += ProcessDeadLetterMessageAsync;
 processor.ProcessErrorAsync += ProcessErrorAsync;
 
-await processor.StopProcessingAsync();
+await processor.StartProcessingAsync();
 
 Utils.WriteLine("Receiving dead letter messages", ConsoleColor.Cyan);
 Console.WriteLine();

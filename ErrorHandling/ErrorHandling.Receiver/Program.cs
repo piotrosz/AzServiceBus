@@ -12,14 +12,11 @@ await using var client = new ServiceBusClient(Settings.GetConnectionString());
 var queueName = "errorhandling";
 var forwardingQueue = "forwardingqueue";
 
-await CreateQueue();
-
-ReceiveMessages();
-
-Console.ReadLine();
+await EnsureQueues();
+await ReceiveMessages();
 
 
-void ReceiveMessages()
+async Task ReceiveMessages()
 {
     var options = new ServiceBusProcessorOptions
     {
@@ -32,7 +29,12 @@ void ReceiveMessages()
     processor.ProcessMessageAsync += ProcessMessage;
     processor.ProcessErrorAsync += ProcessError;
 
+    await processor.StartProcessingAsync();
     Utils.WriteLine("Receiving messages", ConsoleColor.Cyan);
+
+    Console.ReadLine();
+    await processor.StopProcessingAsync();
+    await processor.CloseAsync();
 
 }
 
@@ -70,7 +72,7 @@ async Task ProcessTextMessage(ProcessMessageEventArgs args)
 {
     var body = Encoding.UTF8.GetString(args.Message.Body);
 
-    Utils.WriteLine($"Text message: { body } - DeliveryCount: { args.Message.DeliveryCount }", ConsoleColor.Green);
+    Utils.WriteLine($"Text message: { body } - DeliveryCount: {args.Message.DeliveryCount}", ConsoleColor.Green);
 
     try
     {
@@ -107,8 +109,10 @@ async Task ProcessTextMessage(ProcessMessageEventArgs args)
 
 async Task ProcessJsonMessage(ProcessMessageEventArgs args)
 {
+    Utils.WriteLine($"Message delivery count is {args.Message.DeliveryCount}", ConsoleColor.Green);
+    
     var body = Encoding.UTF8.GetString(args.Message.Body);
-    Utils.WriteLine($"JSON message { body }" + body, ConsoleColor.Green);
+    Utils.WriteLine($"JSON message body { body }" + body, ConsoleColor.Green);
 
     try
     {                
@@ -122,14 +126,15 @@ async Task ProcessJsonMessage(ProcessMessageEventArgs args)
     }
     catch (Exception ex)
     {
-        Utils.WriteLine($"Exception: {  ex.Message }", ConsoleColor.Yellow);
+        Utils.WriteLine($"Exception: {ex.Message}", ConsoleColor.Yellow);
+
         //await message.DeadLetterMessageAsync(message.Message, ex.Message, ex.ToString());
 
     }
 }
 
 
-async Task CreateQueue()
+async Task EnsureQueues()
 {
     var managementClient = new ServiceBusAdministrationClient(Settings.GetConnectionString());
            
@@ -137,7 +142,9 @@ async Task CreateQueue()
     {
         await managementClient.CreateQueueAsync(new CreateQueueOptions(queueName)
         {
-            LockDuration = TimeSpan.FromSeconds(5)
+            LockDuration = TimeSpan.FromSeconds(5),
+            MaxDeliveryCount = 5, // 10 is the default
+            AutoDeleteOnIdle = TimeSpan.FromDays(5),
         });
     }
     if (!await managementClient.QueueExistsAsync(forwardingQueue))
@@ -149,4 +156,5 @@ async Task CreateQueue()
 async Task ProcessError(ProcessErrorEventArgs arg)
 {
     Utils.WriteLine($"Exception: { arg.Exception.Message }", ConsoleColor.Yellow);
+    
 }
