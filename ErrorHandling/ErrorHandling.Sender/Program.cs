@@ -32,6 +32,7 @@ while (true)
             await SendMessage("{\"contact\": {\"name\": \"Alan\",\"twitter\": \"@alansmith\" }}", "application/json");
             break;
         case "poison":
+            // xml in content but contentType set to json
             await SendMessage("<contact><name>Alan</name><twitter>@alansmith</twitter></contact>", "application/json");
             break;
         case "unknown":

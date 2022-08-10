@@ -58,10 +58,10 @@ async Task ProcessMessage(ProcessMessageEventArgs args)
             //await args.AbandonMessageAsync(message);
 
             // Comment in to dead letter message
-            //await args.DeadLetterMessageAsync(
-            //    message, 
-            //    "Unknown message type",
-            //    "The message type: " + message.ContentType + " is not known.");
+            await args.DeadLetterMessageAsync(
+                message,
+                "Unknown message type",
+                "The message type: " + message.ContentType + " is not known.");
 
             break;
     }
@@ -76,7 +76,8 @@ async Task ProcessTextMessage(ProcessMessageEventArgs args)
 
     try
     {
-        // Send a message to a queue
+        // Send a message to a forwarding queue
+        // Disable forwarding queue to test for exception being thrown
         var forwardingMessage = new ServiceBusMessage();
         var forwardingSender = client.CreateSender(forwardingQueue);
         await forwardingSender.SendMessageAsync(forwardingMessage);
@@ -94,16 +95,16 @@ async Task ProcessTextMessage(ProcessMessageEventArgs args)
         // Comment in to abandon message
         //await args.AbandonMessageAsync(args.Message);
 
-        // Comment in to dead-letter the message after 5 processing attempts
-        //if (args.Message.DeliveryCount > 5)
-        //{
-        //    await args.DeadLetterMessageAsync(args.Message, ex.Message, ex.ToString());
-        //}
-        //else
-        //{
-        //    // Abandon the message
-        //    await args.AbandonMessageAsync(args.Message);
-        //}
+        // Comment in to dead-letter the message after 2 processing attempts
+        if (args.Message.DeliveryCount > 2)
+        {
+            await args.DeadLetterMessageAsync(args.Message, ex.Message, ex.ToString());
+        }
+        else
+        {
+            // Abandon the message
+            await args.AbandonMessageAsync(args.Message);
+        }
     }
 }
 
@@ -128,7 +129,7 @@ async Task ProcessJsonMessage(ProcessMessageEventArgs args)
     {
         Utils.WriteLine($"Exception: {ex.Message}", ConsoleColor.Yellow);
 
-        //await message.DeadLetterMessageAsync(message.Message, ex.Message, ex.ToString());
+        await args.DeadLetterMessageAsync(args.Message, ex.Message, ex.ToString());
 
     }
 }
