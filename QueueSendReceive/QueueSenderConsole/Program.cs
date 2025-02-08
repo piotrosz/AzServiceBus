@@ -2,13 +2,13 @@
 using Azure.Messaging.ServiceBus;
 using CommonServiceBusConnectionString;
 
-string ServiceBusConnectionString = Settings.GetConnectionString();
-string QueueName = "demoqueue";
+var serviceBusConnectionString = Settings.GetConnectionString();
+const string queueName = "demoqueue";
 
-var serviceBusClient = new ServiceBusClient(ServiceBusConnectionString);
-var queueSender = serviceBusClient.CreateSender(QueueName);
+var serviceBusClient = new ServiceBusClient(serviceBusConnectionString);
+var queueSender = serviceBusClient.CreateSender(queueName);
 
-for (int i = 0; i < 10; i++)
+for (var i = 0; i < 10; i++)
 {
     var content = $"Message: { i }";
     var message = new ServiceBusMessage(Encoding.UTF8.GetBytes(content));
@@ -16,6 +16,6 @@ for (int i = 0; i < 10; i++)
     Console.WriteLine("Sent: " + i);
 }
 
-queueSender.CloseAsync().Wait();
+await queueSender.CloseAsync();
 Console.WriteLine("Sent messages...");
 Console.ReadLine();

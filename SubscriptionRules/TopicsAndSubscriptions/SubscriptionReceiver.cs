@@ -2,6 +2,8 @@
 using Azure.Messaging.ServiceBus;
 using Newtonsoft.Json;
 
+namespace TopicsAndSubscriptions;
+
 class SubscriptionReceiver
 {
     private readonly ServiceBusClient _client;
@@ -14,7 +16,7 @@ class SubscriptionReceiver
 
     public async Task RegisterMessageHandler(string topicName, string subscriptionName)
     {
-        var options = new ServiceBusProcessorOptions()
+        var options = new ServiceBusProcessorOptions
         {
             MaxConcurrentCalls = 1,
             AutoCompleteMessages = false
@@ -33,7 +35,7 @@ class SubscriptionReceiver
         var orderJson = Encoding.UTF8.GetString(message.Message.Body);
         var order = JsonConvert.DeserializeObject<Order>(orderJson);
 
-        Console.WriteLine($"{ order.ToString() }");
+        Console.WriteLine(order.ToString());
 
         await message.CompleteMessageAsync(message.Message);
     }
@@ -51,4 +53,3 @@ class SubscriptionReceiver
         await _client.DisposeAsync();
     }
 }
-

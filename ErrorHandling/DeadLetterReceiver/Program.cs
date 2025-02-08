@@ -21,8 +21,8 @@ var processor =  queueClient.CreateProcessor(queueName, options);
 
 Utils.WriteLine($"Dead letter path: {processor.EntityPath}", ConsoleColor.Cyan);
 
-processor.ProcessMessageAsync += ProcessDeadLetterMessageAsync;
-processor.ProcessErrorAsync += ProcessErrorAsync;
+processor.ProcessMessageAsync += ProcessDeadLetterMessage;
+processor.ProcessErrorAsync += ProcessError;
 
 await processor.StartProcessingAsync();
 
@@ -33,7 +33,7 @@ Console.ReadLine();
 await processor.StopProcessingAsync();
 await processor.CloseAsync();
 
-async Task ProcessDeadLetterMessageAsync(ProcessMessageEventArgs message)
+async Task ProcessDeadLetterMessage(ProcessMessageEventArgs message)
 {
     Utils.WriteLine("Received dead letter message", ConsoleColor.Cyan);
     Utils.WriteLine($"    Content type: { message.Message.ContentType }", ConsoleColor.Green);
@@ -41,11 +41,10 @@ async Task ProcessDeadLetterMessageAsync(ProcessMessageEventArgs message)
     Utils.WriteLine($"    DeadLetterErrorDescription: { message.Message.DeadLetterErrorDescription }", ConsoleColor.Green);
 
     await message.CompleteMessageAsync(message.Message);
-    
     Console.WriteLine();
 }
 
-async Task ProcessErrorAsync(ProcessErrorEventArgs arg)
+async Task ProcessError(ProcessErrorEventArgs arg)
 {
     Utils.WriteLine($"Exception: { arg.Exception.Message }", ConsoleColor.Yellow);
 }

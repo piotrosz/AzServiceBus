@@ -1,8 +1,8 @@
 ﻿using CommonServiceBusConnectionString;
 using TopicsAndSubscriptions;
 
-string ServiceBusConnectionString = Settings.GetConnectionString();
-string TopicName = "Orders";
+var serviceBusConnectionString = Settings.GetConnectionString();
+const string topicName = "Orders";
 
 Console.WriteLine("Topics and Subscriptions Console");
 
@@ -19,27 +19,27 @@ PromptAndWait("Topics and Subscriptions Console Complete");
 
 async Task CreateTopicsAndSubscriptions()
 {
-    var manager = new Manager(ServiceBusConnectionString);
+    var manager = new Manager(serviceBusConnectionString);
    
-    await manager.CreateTopic(TopicName);
-    await manager.CreateSubscription(TopicName, "AllOrders");
+    await manager.CreateTopic(topicName);
+    await manager.CreateSubscription(topicName, "AllOrders");
 
-    await manager.CreateSubscriptionWithSqlFilter(TopicName, "UsaOrders", "region = 'USA'");
-    await manager.CreateSubscriptionWithSqlFilter(TopicName, "EuOrders", "region = 'EU'");
+    await manager.CreateSubscriptionWithSqlFilter(topicName, "UsaOrders", "region = 'USA'");
+    await manager.CreateSubscriptionWithSqlFilter(topicName, "EuOrders", "region = 'EU'");
 
-    await manager.CreateSubscriptionWithSqlFilter(TopicName, "LargeOrders", "items > 30");
-    await manager.CreateSubscriptionWithSqlFilter(TopicName, "HighValueOrders", "value > 500");
+    await manager.CreateSubscriptionWithSqlFilter(topicName, "LargeOrders", "items > 30");
+    await manager.CreateSubscriptionWithSqlFilter(topicName, "HighValueOrders", "value > 500");
 
-    await manager.CreateSubscriptionWithSqlFilter(TopicName, "LoyaltyCardOrders", "loyalty = true AND region = 'USA'");
+    await manager.CreateSubscriptionWithSqlFilter(topicName, "LoyaltyCardOrders", "loyalty = true AND region = 'USA'");
 
-    await manager.CreateSubscriptionWithCorrelationFilter(TopicName, "UkOrders", "UK");
+    await manager.CreateSubscriptionWithCorrelationFilter(topicName, "UkOrders", "UK");
 }
 
 async Task SendOrderMessages()
 {
     var orders = CreateTestOrders();
 
-    var sender = new TopicSender(ServiceBusConnectionString, TopicName);
+    var sender = new TopicSender(serviceBusConnectionString, topicName);
 
     foreach (var order in orders)
     {
@@ -51,13 +51,13 @@ async Task SendOrderMessages()
 
 async Task ReceiveOrdersFromAllSubscriptions()
 {
-    var manager = new Manager(ServiceBusConnectionString);
+    var manager = new Manager(serviceBusConnectionString);
 
     // Loop through the subscriptions and process the order messages.
-    await foreach (var subscriptionProperties in manager.GetSubscriptionsForTopic(TopicName))
+    await foreach (var subscriptionProperties in manager.GetSubscriptionsForTopic(topicName))
     {
-        var receiver = new SubscriptionReceiver(ServiceBusConnectionString);
-        await receiver.RegisterMessageHandler(TopicName, subscriptionProperties.SubscriptionName);
+        var receiver = new SubscriptionReceiver(serviceBusConnectionString);
+        await receiver.RegisterMessageHandler(topicName, subscriptionProperties.SubscriptionName);
         PromptAndWait($"Receiving orders from { subscriptionProperties.SubscriptionName }, press enter when complete..");
         await receiver.Close();
     }
@@ -65,8 +65,8 @@ async Task ReceiveOrdersFromAllSubscriptions()
 
 static List<Order> CreateTestOrders()
 {
-    return new List<Order>
-    {
+    return
+    [
         new()
         {
             Name = "Loyal Customer",
@@ -75,6 +75,7 @@ static List<Order> CreateTestOrders()
             Items = 1,
             HasLoyaltyCard = true
         },
+
         new()
         {
             Name = "Large Order",
@@ -83,6 +84,7 @@ static List<Order> CreateTestOrders()
             Items = 50,
             HasLoyaltyCard = false
         },
+
         new()
         {
             Name = "High Value",
@@ -91,6 +93,7 @@ static List<Order> CreateTestOrders()
             Items = 45,
             HasLoyaltyCard = false
         },
+
         new()
         {
             Name = "Loyal Europe",
@@ -99,6 +102,7 @@ static List<Order> CreateTestOrders()
             Items = 3,
             HasLoyaltyCard = true
         },
+
         new()
         {
             Name = "UK Order",
@@ -107,7 +111,7 @@ static List<Order> CreateTestOrders()
             Items = 3,
             HasLoyaltyCard = false
         }
-    };
+    ];
 }
 
 static void PromptAndWait(string text)

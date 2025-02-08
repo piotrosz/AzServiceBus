@@ -5,7 +5,7 @@ using CommonServiceBusConnectionString;
 using Newtonsoft.Json;
 using WorkingWithMessages.MessageEntities;
 
-const string QueueName = "workingwithmessages";
+const string queueName = "workingwithmessages";
 
 WriteLine("Sender Console - Hit enter", ConsoleColor.White);
 Console.ReadLine();
@@ -35,7 +35,7 @@ static async Task SendTextString(string text)
     WriteLine("SendTextStringAsMessagesAsync", ConsoleColor.Cyan);
 
     await using var client = new ServiceBusClient(Settings.GetConnectionString());
-    var sender = client.CreateSender(QueueName);
+    var sender = client.CreateSender(queueName);
 
     Write("Sending...", ConsoleColor.Green);
 
@@ -56,7 +56,7 @@ static async Task SendTextStringAsMessagesAsync(string text)
 
     // Create a client
     await using var client = new ServiceBusClient(Settings.GetConnectionString());
-    var sender = client.CreateSender(QueueName);
+    var sender = client.CreateSender(queueName);
 
     Write("Sending:", ConsoleColor.Green);
 
@@ -82,7 +82,7 @@ static async Task SendTextStringAsBatchAsync(string text)
     WriteLine("SendTextStringAsBatchAsync", ConsoleColor.Cyan);
 
     await using var client = new ServiceBusClient(Settings.GetConnectionString());
-    var sender = client.CreateSender(QueueName);
+    var sender = client.CreateSender(queueName);
 
     Write("Sending:", ConsoleColor.Green);
     
@@ -121,7 +121,7 @@ static async Task SendControlMessageAsync()
     message.ApplicationProperties.Add("ActionTime", DateTime.UtcNow.AddHours(2));
 
     await using var client = new ServiceBusClient(Settings.GetConnectionString());
-    var sender = client.CreateSender(QueueName);
+    var sender = client.CreateSender(queueName);
 
     Write("Sending control message...", ConsoleColor.Green);
     await sender.SendMessageAsync(message);
@@ -150,7 +150,7 @@ static async Task SendPizzaOrderAsync()
     };
 
     await using var client = new ServiceBusClient(Settings.GetConnectionString());
-    var sender = client.CreateSender(QueueName);
+    var sender = client.CreateSender(queueName);
     Write("Sending order...", ConsoleColor.Green);
     await sender.SendMessageAsync(message);
     WriteLine("Done!", ConsoleColor.Green);
@@ -165,7 +165,7 @@ static async Task SendPizzaOrderListAsMessagesAsync()
     var pizzaOrderList = GetPizzaOrderList();
 
     await using var client = new ServiceBusClient(Settings.GetConnectionString());
-    var sender = client.CreateSender(QueueName);
+    var sender = client.CreateSender(queueName);
 
     WriteLine("Sending...", ConsoleColor.Yellow);
     var watch = Stopwatch.StartNew();
@@ -194,7 +194,7 @@ static async Task SendPizzaOrderListAsBatchAsync()
 
     var pizzaOrderList = GetPizzaOrderList();
     await using var client = new ServiceBusClient(Settings.GetConnectionString());
-    var sender = client.CreateSender(QueueName);
+    var sender = client.CreateSender(queueName);
 
     var watch = Stopwatch.StartNew();
     var messageList = new List<ServiceBusMessage>();

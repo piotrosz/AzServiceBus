@@ -1,4 +1,6 @@
-﻿class Order
+﻿namespace TopicsAndSubscriptions;
+
+record Order
 {
     public string Name { get; set; }
 
@@ -19,4 +21,3 @@
         return $"{ Name }\tItm:{ Items }\t${ Value }\t{ Region }\tLoyal:{ HasLoyaltyCard }";
     }
 }
-

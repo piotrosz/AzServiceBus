@@ -1,13 +1,12 @@
-﻿namespace DeadLetterReceiver
-{ 
-    public static class Utils
+﻿namespace DeadLetterReceiver;
+
+public static class Utils
+{
+    public static void WriteLine(string text, ConsoleColor color)
     {
-        public static void WriteLine(string text, ConsoleColor color)
-        {
-            var tempColor = Console.ForegroundColor;
-            Console.ForegroundColor = color;
-            Console.WriteLine(text);
-            Console.ForegroundColor = tempColor;
-        }
+        var tempColor = Console.ForegroundColor;
+        Console.ForegroundColor = color;
+        Console.WriteLine(text);
+        Console.ForegroundColor = tempColor;
     }
 }

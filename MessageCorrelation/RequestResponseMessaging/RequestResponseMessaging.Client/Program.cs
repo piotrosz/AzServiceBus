@@ -4,8 +4,8 @@ using Azure.Messaging.ServiceBus;
 using CommonServiceBusConnectionString;
 
 var connectionString = Settings.GetConnectionString();
-string requestQueueName = "requestQueue";
-string responseQueueName = "responseQueue";
+var requestQueueName = "requestQueue";
+var responseQueueName = "responseQueue";
 
 await  using var client = new ServiceBusClient(connectionString);
 await using var requestQueueClient = client.CreateSender(requestQueueName);
@@ -17,10 +17,10 @@ while (true)
 {
     Console.ForegroundColor = ConsoleColor.White;
     Console.WriteLine("Enter text:");
-    string text = Console.ReadLine() ?? "";
+    var text = Console.ReadLine() ?? "";
 
     // Create a session identifier for the response message
-    string responseSessionId = Guid.NewGuid().ToString();
+    var responseSessionId = Guid.NewGuid().ToString();
 
     var requestMessage = new ServiceBusMessage(Encoding.UTF8.GetBytes(text))
     {

@@ -4,8 +4,8 @@ using Azure.Messaging.ServiceBus.Administration;
 using CommonServiceBusConnectionString;
 using static System.Console;
 
-string ServiceBusConnectionString = Settings.GetConnectionString();
-string TopicName = "Orders";
+var serviceBusConnectionString = Settings.GetConnectionString();
+const string topicName = "Orders";
 
 WriteLine("Wire Tap Console");
 WriteLine("Press enter to activate wire tap");
@@ -13,16 +13,16 @@ ReadLine();
 
 var subscriptionName = $"wiretap-{ Guid.NewGuid() }";
 
-var managementClient = new ServiceBusAdministrationClient(ServiceBusConnectionString);
+var managementClient = new ServiceBusAdministrationClient(serviceBusConnectionString);
 
-var options = new CreateSubscriptionOptions(TopicName, subscriptionName)
+var options = new CreateSubscriptionOptions(topicName, subscriptionName)
 {
     AutoDeleteOnIdle = TimeSpan.FromMinutes(5)
 };
 var subscription = await managementClient.CreateSubscriptionAsync(options);
 
-await using var serviceBusClient = new ServiceBusClient(ServiceBusConnectionString);
-await using var receiver = serviceBusClient.CreateReceiver(TopicName, subscriptionName);
+await using var serviceBusClient = new ServiceBusClient(serviceBusConnectionString);
+await using var receiver = serviceBusClient.CreateReceiver(topicName, subscriptionName);
 
 WriteLine($"Receiving on { subscriptionName }");
 WriteLine("Press enter to quit...");

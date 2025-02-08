@@ -3,34 +3,34 @@ using Azure.Messaging.ServiceBus;
 using Azure.Messaging.ServiceBus.Administration;
 using CommonServiceBusConnectionString;
 
-string ServiceBusConnectionString = Settings.GetConnectionString();
-string TopicName = "chattopic";
+var serviceBusConnectionString = Settings.GetConnectionString();
+const string topicName = "chattopic";
 
 Console.WriteLine("Enter your name:");
 var userName = Console.ReadLine();
 
-var manager = new ServiceBusAdministrationClient(ServiceBusConnectionString);
+var manager = new ServiceBusAdministrationClient(serviceBusConnectionString);
 
-if (!await manager.TopicExistsAsync(TopicName))
+if (!await manager.TopicExistsAsync(topicName))
 {
-    await manager.CreateTopicAsync(TopicName);
+    await manager.CreateTopicAsync(topicName);
 }
 
 // Create a subscription for the user
-var createSubscriptionOptions = new CreateSubscriptionOptions(TopicName, userName)
+var createSubscriptionOptions = new CreateSubscriptionOptions(topicName, userName)
 {
     AutoDeleteOnIdle = TimeSpan.FromMinutes(5)
 };
 
-if (!await manager.SubscriptionExistsAsync(TopicName, userName))
+if (!await manager.SubscriptionExistsAsync(topicName, userName))
 {
     await manager.CreateSubscriptionAsync(createSubscriptionOptions);
 }
 
-var topicClient = new ServiceBusClient(ServiceBusConnectionString);
-var sender = topicClient.CreateSender(TopicName);
+var topicClient = new ServiceBusClient(serviceBusConnectionString);
+var sender = topicClient.CreateSender(topicName);
 
-await using var processor = topicClient.CreateProcessor(TopicName, userName);
+await using var processor = topicClient.CreateProcessor(topicName, userName);
 
 processor.ProcessMessageAsync += MessageHandler;
 processor.ProcessErrorAsync += ErrorHandler;
@@ -82,7 +82,7 @@ static Task ErrorHandler(ProcessErrorEventArgs args)
 
 ServiceBusMessage CreateHelloMessage(string? userName)
 {
-    var serviceBusMessage = new ServiceBusMessage(Encoding.UTF8.GetBytes("Has entered the room..."));
+    var serviceBusMessage = new ServiceBusMessage("Has entered the room..."u8.ToArray());
     //serviceBusMessage.Subject = userName;
     serviceBusMessage.ApplicationProperties.Add("UserName", userName);
     return serviceBusMessage;
@@ -90,7 +90,7 @@ ServiceBusMessage CreateHelloMessage(string? userName)
 
 ServiceBusMessage CreateGoodbyeMessage(string? userName)
 {
-    var goodbyeMessage = new ServiceBusMessage(Encoding.UTF8.GetBytes("Has left the building..."));
+    var goodbyeMessage = new ServiceBusMessage("Has left the building..."u8.ToArray());
     goodbyeMessage.ApplicationProperties.Add("UserName", userName);
     return goodbyeMessage;
 }

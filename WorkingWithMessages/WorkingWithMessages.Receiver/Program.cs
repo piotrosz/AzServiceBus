@@ -5,8 +5,8 @@ using Azure.Messaging.ServiceBus.Administration;
 using CommonServiceBusConnectionString;
 using Newtonsoft.Json;
 
-await using ServiceBusClient QueueClient = new ServiceBusClient(Settings.GetConnectionString());
-const string QueueName = "workingwithmessages";
+await using ServiceBusClient queueClient = new ServiceBusClient(Settings.GetConnectionString());
+const string queueName = "workingwithmessages";
 
 WriteLine("Receiver Console", ConsoleColor.White);
 
@@ -38,7 +38,7 @@ async Task ReceiveAndProcessText(int threads)
         MaxAutoLockRenewalDuration = TimeSpan.FromSeconds(30)
     };
     
-    var processor =  QueueClient.CreateProcessor(QueueName, options);
+    var processor =  queueClient.CreateProcessor(queueName, options);
 
     processor.ProcessMessageAsync += ProcessTextMessageAsync;
     processor.ProcessErrorAsync += ProcessErrorHandler;
@@ -63,7 +63,7 @@ async Task ReceiveAndProcessControlMessage(int threads)
         MaxAutoLockRenewalDuration = TimeSpan.FromSeconds(30)
     };
     
-    var processor = QueueClient.CreateProcessor(QueueName, options);
+    var processor = queueClient.CreateProcessor(queueName, options);
 
     processor.ProcessMessageAsync += ProcessControlMessageAsync;
     processor.ProcessErrorAsync += ProcessErrorHandler;
@@ -84,7 +84,7 @@ async Task ReceiveAndProcessPizzaOrders(int threads)
         MaxAutoLockRenewalDuration = TimeSpan.FromMinutes(10)
     };
 
-    var processor = QueueClient.CreateProcessor(QueueName, options);
+    var processor = queueClient.CreateProcessor(queueName, options);
     
     processor.ProcessMessageAsync += ProcessPizzaMessageAsync;
     processor.ProcessErrorAsync += ProcessErrorHandler;
@@ -147,7 +147,7 @@ async Task ReceiveAndProcessCharacters(int threads)
         MaxAutoLockRenewalDuration = TimeSpan.FromSeconds(30)
     };
 
-    var processor= QueueClient.CreateProcessor(QueueName, options);
+    var processor= queueClient.CreateProcessor(queueName, options);
 
     processor.ProcessMessageAsync += ProcessCharacterMessageAsync;
     processor.ProcessErrorAsync += ProcessErrorHandler;
@@ -168,15 +168,15 @@ async Task ProcessCharacterMessageAsync(ProcessMessageEventArgs message)
 static async Task RecreateQueueAsync()
 {
     var manager = new ServiceBusAdministrationClient(Settings.GetConnectionString());
-    if (await manager.QueueExistsAsync(QueueName))
+    if (await manager.QueueExistsAsync(queueName))
     {
-        WriteLine($"Deleting queue: { QueueName }...", ConsoleColor.Magenta);
-        await manager.DeleteQueueAsync(QueueName);
+        WriteLine($"Deleting queue: { queueName }...", ConsoleColor.Magenta);
+        await manager.DeleteQueueAsync(queueName);
         WriteLine("Done!", ConsoleColor.Magenta);
     }
 
-    WriteLine($"Creating queue: { QueueName }...", ConsoleColor.Magenta);
-    await manager.CreateQueueAsync(QueueName);
+    WriteLine($"Creating queue: { queueName }...", ConsoleColor.Magenta);
+    await manager.CreateQueueAsync(queueName);
     WriteLine("Done!", ConsoleColor.Magenta);
 }
 
