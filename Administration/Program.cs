@@ -1,26 +1,21 @@
 ﻿using AzServiceBusAdministration;
+using CommonServiceBusConnectionString;
 using Microsoft.Extensions.Configuration;
 
 // Enter a valid Service Bus connection string
 // Minimum "Stardard" tier to create topics
 
-var builder = new ConfigurationBuilder()
-    .SetBasePath(Directory.GetCurrentDirectory())
-    .AddJsonFile("appsettings.json", optional: false);
+var serviceBusConnectionString = Settings.GetConnectionString();
+ var helper = new ManagementHelper(serviceBusConnectionString);
 
-IConfiguration config = builder.Build();
-string ServiceBusConnectionString = config.GetConnectionString("ServiceBus");
-
- var helper = new ManagementHelper(ServiceBusConnectionString);
-
-bool done = false;
+var done = false;
 do
 {
     Console.ForegroundColor = ConsoleColor.Cyan;
     Console.Write(">");
-    string commandLine = Console.ReadLine();
+    var commandLine = Console.ReadLine();
     Console.ForegroundColor = ConsoleColor.Magenta;
-    string[] commands = commandLine.Split(' ');
+    var commands = commandLine.Split(' ');
 
     try
     {
@@ -28,8 +23,7 @@ do
         {
             switch (commands[0])
             {
-                case "createqueue":
-                case "cq":
+                case "createqueue" or "cq" :
                     if (commands.Length > 1)
                     {
                         helper.CreateQueueAsync(commands[1]).Wait();
@@ -40,12 +34,10 @@ do
                         Console.WriteLine("Queue path not specified.");
                     }
                     break;
-                case "listqueues":
-                case "lq":
+                case "listqueues" or "lq" :
                     helper.ListQueuesAsync().Wait();
                     break;
-                case "getqueue":
-                case "gq":
+                case "getqueue" or "gq" :
                     if (commands.Length > 1)
                     {
                         helper.GetQueueAsync(commands[1]).Wait();
@@ -56,8 +48,7 @@ do
                         Console.WriteLine("Queue path not specified.");
                     }
                     break;
-                case "deletequeue":
-                case "dq":
+                case "deletequeue" or "dq" :
                     if (commands.Length > 1)
                     {
                         helper.DeleteQueueAsync(commands[1]).Wait();
@@ -68,8 +59,7 @@ do
                         Console.WriteLine("Queue path not specified.");
                     }
                     break;
-                case "createtopic":
-                case "ct":
+                case "createtopic" or "ct":
                     if (commands.Length > 1)
                     {
                         helper.CreateTopicAsync(commands[1]).Wait();
@@ -80,8 +70,7 @@ do
                         Console.WriteLine("Topic path not specified.");
                     }
                     break;
-                case "createsubscription":
-                case "cs":
+                case "createsubscription" or "cs":
                     if (commands.Length > 2)
                     {
                         helper.CreateSubscriptionAsync(commands[1], commands[2]).Wait();
@@ -92,8 +81,7 @@ do
                         Console.WriteLine("Topic path not specified.");
                     }
                     break;
-                case "listtopics":
-                case "lt":
+                case "listtopics" or "lt":
                     helper.ListTopicsAndSubscriptionsAsync().Wait();
                     break;
                 case "exit":
@@ -108,7 +96,6 @@ do
         Console.ForegroundColor = ConsoleColor.Red;
         Console.WriteLine(ex.Message);
     }
-
 } while (!done);
         
 

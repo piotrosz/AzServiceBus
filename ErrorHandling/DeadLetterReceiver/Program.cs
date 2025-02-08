@@ -5,7 +5,7 @@ using DeadLetterReceiver;
 Thread.Sleep(3000);
 
 var queueClient = new ServiceBusClient(Settings.GetConnectionString());
-string queueName = "errorhandling";
+var queueName = "errorhandling";
 
 Utils.WriteLine("DeadLetterReceiverConsole", ConsoleColor.White);
 Console.WriteLine();

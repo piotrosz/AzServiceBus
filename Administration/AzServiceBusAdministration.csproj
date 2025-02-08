@@ -15,4 +15,8 @@
     </None>
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\CommonServiceBusConnectionString\ComonServiceBusConnectionString.csproj" />
+  </ItemGroup>
+
 </Project>

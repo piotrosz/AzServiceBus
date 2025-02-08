@@ -4,6 +4,8 @@ namespace CommonServiceBusConnectionString;
 
 public static class Settings
 {
+    const string ConnectionStringKey = "ServiceBus";
+    
     public static string GetConnectionString()
     {
         var builder = new ConfigurationBuilder()
@@ -11,6 +13,13 @@ public static class Settings
             .AddJsonFile("appsettings.json", optional: false);
 
         IConfiguration config = builder.Build();
-        return config.GetConnectionString("ServiceBus");
+        var connString = config.GetConnectionString(ConnectionStringKey);
+
+        if (string.IsNullOrWhiteSpace(connString))
+        {
+            throw new ApplicationException("No ServiceBus connection string found in appsettings.json");
+        }
+        
+        return connString;
     }
 }

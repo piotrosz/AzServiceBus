@@ -57,6 +57,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "files", "files", "{16DE0C0D
 		Directory.Packages.props = Directory.Packages.props
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Administration", "Administration", "{EE01CEFF-C039-4906-A60E-5299EF32ADDB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AzServiceBusAdministration", "Administration\AzServiceBusAdministration.csproj", "{7DEB9C05-C492-4FA9-B2A1-F1D2480762C5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -131,6 +135,10 @@ Global
 		{0C1976F2-C643-4BA5-8A93-CB4FA9FD6676}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0C1976F2-C643-4BA5-8A93-CB4FA9FD6676}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0C1976F2-C643-4BA5-8A93-CB4FA9FD6676}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7DEB9C05-C492-4FA9-B2A1-F1D2480762C5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7DEB9C05-C492-4FA9-B2A1-F1D2480762C5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7DEB9C05-C492-4FA9-B2A1-F1D2480762C5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7DEB9C05-C492-4FA9-B2A1-F1D2480762C5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -153,6 +161,7 @@ Global
 		{B82E1FB4-DF85-4817-9E8F-104D5FE4AF4D} = {3DBAF63A-8CB8-4DDC-8AB0-C17CE0CA34CB}
 		{00B8F067-E0AE-4A38-845A-D1C1AE2E712F} = {3DBAF63A-8CB8-4DDC-8AB0-C17CE0CA34CB}
 		{0C1976F2-C643-4BA5-8A93-CB4FA9FD6676} = {3DBAF63A-8CB8-4DDC-8AB0-C17CE0CA34CB}
+		{7DEB9C05-C492-4FA9-B2A1-F1D2480762C5} = {EE01CEFF-C039-4906-A60E-5299EF32ADDB}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {BBB8DFFB-EAE9-4D3D-B217-1B21764FD386}
