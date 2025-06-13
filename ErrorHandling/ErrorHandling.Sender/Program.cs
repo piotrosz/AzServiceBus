@@ -16,7 +16,7 @@ while (true)
 {
     Console.WriteLine("text/json/poison/unknown/exit?");
 
-    var messageType = Console.ReadLine().ToLower();
+    var messageType = Console.ReadLine()?.ToLower();
 
     if (messageType == "exit")
     {
