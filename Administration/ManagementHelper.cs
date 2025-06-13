@@ -3,21 +3,16 @@ using Azure.Messaging.ServiceBus.Administration;
 
 namespace AzServiceBusAdministration;
 
-internal sealed class ManagementHelper
+internal sealed class ManagementHelper(string connectionString)
 {
-    private readonly ServiceBusAdministrationClient _managementClient;
-
-    public ManagementHelper(string connectionString)
-    {
-        _managementClient = new ServiceBusAdministrationClient(connectionString);
-    }
+    private readonly ServiceBusAdministrationClient _managementClient = new(connectionString);
 
     public async Task CreateQueueAsync(string queuePath)
     {
         Console.Write("Creating queue {0}...", queuePath);
         var createQueueOptions = GetQueueOptions(queuePath);
         var queueProps = await _managementClient.CreateQueueAsync(createQueueOptions);
-        Console.WriteLine($"Done!");
+        Console.WriteLine("Done!");
         DumpQueueProperties(queueProps);
     }
 
