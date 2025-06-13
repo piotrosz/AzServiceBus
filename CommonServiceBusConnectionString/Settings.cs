@@ -5,21 +5,23 @@ namespace CommonServiceBusConnectionString;
 public static class Settings
 {
     const string ConnectionStringKey = "ServiceBus";
+    const string ConfigFileName = "appsettings.json";
     
     public static string GetConnectionString()
     {
         var builder = new ConfigurationBuilder()
+            .AddUserSecrets(ConnectionStringKey)
             .SetBasePath(Directory.GetCurrentDirectory())
-            .AddJsonFile("appsettings.json", optional: false);
+            .AddJsonFile(ConfigFileName, optional: false);
 
         IConfiguration config = builder.Build();
-        var connString = config.GetConnectionString(ConnectionStringKey);
+        var connectionString = config.GetConnectionString(ConnectionStringKey);
 
-        if (string.IsNullOrWhiteSpace(connString))
+        if (string.IsNullOrWhiteSpace(connectionString))
         {
-            throw new ApplicationException("No ServiceBus connection string found in appsettings.json");
+            throw new ApplicationException($"ServiceBus connection string was not found in user secrets nor in {ConfigFileName} config file.");
         }
         
-        return connString;
+        return connectionString;
     }
 }
