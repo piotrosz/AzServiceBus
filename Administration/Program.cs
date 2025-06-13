@@ -1,8 +1,7 @@
 ﻿using AzServiceBusAdministration;
 using CommonServiceBusConnectionString;
-using Microsoft.Extensions.Configuration;
+using Spectre.Console;
 
-// Enter a valid Service Bus connection string
 // Minimum "Stardard" tier to create topics
 
 var serviceBusConnectionString = Settings.GetConnectionString();
@@ -11,10 +10,8 @@ var serviceBusConnectionString = Settings.GetConnectionString();
 var done = false;
 do
 {
-    Console.ForegroundColor = ConsoleColor.Cyan;
-    Console.Write(">");
+    AnsiConsole.MarkupLine("[cyan]>[/]");
     var commandLine = Console.ReadLine();
-    Console.ForegroundColor = ConsoleColor.Magenta;
     var commands = commandLine.Split(' ');
 
     try
@@ -26,63 +23,58 @@ do
                 case "createqueue" or "cq" :
                     if (commands.Length > 1)
                     {
-                        helper.CreateQueueAsync(commands[1]).Wait();
+                        await helper.CreateQueueAsync(commands[1]);
                     }
                     else
                     {
-                        Console.ForegroundColor = ConsoleColor.Yellow;
-                        Console.WriteLine("Queue path not specified.");
+                        AnsiConsole.MarkupLine("[yellow]Queue path not specified.[/]");
                     }
                     break;
                 case "listqueues" or "lq" :
-                    helper.ListQueuesAsync().Wait();
+                    await helper.ListQueuesAsync();
                     break;
                 case "getqueue" or "gq" :
                     if (commands.Length > 1)
                     {
-                        helper.GetQueueAsync(commands[1]).Wait();
+                        await helper.GetQueueAsync(commands[1]);
                     }
                     else
                     {
-                        Console.ForegroundColor = ConsoleColor.Yellow;
-                        Console.WriteLine("Queue path not specified.");
+                        AnsiConsole.MarkupLine("[yellow]Queue path not specified.[/]");
                     }
                     break;
                 case "deletequeue" or "dq" :
                     if (commands.Length > 1)
                     {
-                        helper.DeleteQueueAsync(commands[1]).Wait();
+                        await helper.DeleteQueueAsync(commands[1]);
                     }
                     else
                     {
-                        Console.ForegroundColor = ConsoleColor.Yellow;
-                        Console.WriteLine("Queue path not specified.");
+                        AnsiConsole.MarkupLine("[yellow]Queue path not specified.[/]");
                     }
                     break;
                 case "createtopic" or "ct":
                     if (commands.Length > 1)
                     {
-                        helper.CreateTopicAsync(commands[1]).Wait();
+                        await helper.CreateTopicAsync(commands[1]);
                     }
                     else
                     {
-                        Console.ForegroundColor = ConsoleColor.Yellow;
-                        Console.WriteLine("Topic path not specified.");
+                        AnsiConsole.MarkupLine("[yellow]Topic path not specified.[/]");
                     }
                     break;
                 case "createsubscription" or "cs":
                     if (commands.Length > 2)
                     {
-                        helper.CreateSubscriptionAsync(commands[1], commands[2]).Wait();
+                        await helper.CreateSubscriptionAsync(commands[1], commands[2]);
                     }
                     else
                     {
-                        Console.ForegroundColor = ConsoleColor.Yellow;
-                        Console.WriteLine("Topic path not specified.");
+                        AnsiConsole.MarkupLine("[yellow]Topic path not specified.[/]");
                     }
                     break;
                 case "listtopics" or "lt":
-                    helper.ListTopicsAndSubscriptionsAsync().Wait();
+                    await helper.ListTopicsAndSubscriptionsAsync();
                     break;
                 case "exit":
                     done = true;
@@ -93,8 +85,7 @@ do
     catch (Exception ex)
     {
         Console.WriteLine();
-        Console.ForegroundColor = ConsoleColor.Red;
-        Console.WriteLine(ex.Message);
+        AnsiConsole.MarkupLine($"[red]{ex.Message}[/]");
     }
 } while (!done);
         

@@ -1,5 +1,6 @@
 ﻿using Azure;
 using Azure.Messaging.ServiceBus.Administration;
+using Spectre.Console;
 
 namespace AzServiceBusAdministration;
 
@@ -20,7 +21,7 @@ internal sealed class ManagementHelper(string connectionString)
     {
         Console.Write("Deleting queue {0}...", queuePath);
         await _managementClient.DeleteQueueAsync(queuePath);
-        Console.WriteLine("Done!");
+        AnsiConsole.MarkupLine(":cloud: Done!");
     }
 
     public async Task ListQueuesAsync()
@@ -44,25 +45,31 @@ internal sealed class ManagementHelper(string connectionString)
     private void DumpQueueProperties(Response<QueueProperties> response)
     {
         var value = response.Value;
-
-        Console.WriteLine($"    Name:                                   { value.Name }");
-        Console.WriteLine($"    MaxSizeInMegabytes:                            { value.MaxSizeInMegabytes }");
-        Console.WriteLine($"    RequiresSession:                        { value.RequiresSession }");
-        Console.WriteLine($"    RequiresDuplicateDetection:             { value.RequiresDuplicateDetection }");
-        Console.WriteLine($"    DuplicateDetectionHistoryTimeWindow:    { value.DuplicateDetectionHistoryTimeWindow }");
-        Console.WriteLine($"    LockDuration:                           { value.LockDuration }");
-        Console.WriteLine($"    DefaultMessageTimeToLive:               { value.DefaultMessageTimeToLive }");
-        Console.WriteLine($"    EnableDeadLetteringOnMessageExpiration: { value.DeadLetteringOnMessageExpiration }");
-        Console.WriteLine($"    EnableBatchedOperations:                { value.EnableBatchedOperations }");
-        Console.WriteLine($"    MaxDeliveryCount:                       { value.MaxDeliveryCount }");
-        Console.WriteLine($"    Status:                                 { value.Status }");
+        
+        var grid = new Grid();
+        grid.AddColumn();
+        grid.AddColumn();
+        
+        grid.AddRow("Name:", value.Name);
+        grid.AddRow("MaxSizeInMegabytes:", value.MaxSizeInMegabytes.ToString());
+        grid.AddRow("RequiresSession", value.RequiresSession.ToString());
+        grid.AddRow("RequiresDuplicateDetection", value.RequiresDuplicateDetection.ToString());
+        grid.AddRow("DuplicateDetectionHistoryTimeWindow", value.DuplicateDetectionHistoryTimeWindow.ToString());
+        grid.AddRow("LockDuration", value.LockDuration.ToString());
+        grid.AddRow("DefaultMessageTimeToLive", value.DefaultMessageTimeToLive.ToString());
+        grid.AddRow("EnableDeadLetteringOnMessageExpiration", value.DeadLetteringOnMessageExpiration.ToString());
+        grid.AddRow("EnableBatchedOperations", value.EnableBatchedOperations.ToString());
+        grid.AddRow("MaxDeliveryCount", value.MaxDeliveryCount.ToString());
+        grid.AddRow("Status", value.Status.ToString());
+        
+        AnsiConsole.Write(grid);
     }
 
     public async Task CreateTopicAsync(string topicPath)
     {
         Console.Write("Creating topic {0}...", topicPath);
-        var description = await _managementClient.CreateTopicAsync(topicPath);
-        Console.WriteLine("Done!");
+        var response = await _managementClient.CreateTopicAsync(topicPath);
+        AnsiConsole.MarkupLine($":cloud: Done! {response}");
     }
     
     public async Task CreateSubscriptionAsync(string topicPath, string subscriptionName)

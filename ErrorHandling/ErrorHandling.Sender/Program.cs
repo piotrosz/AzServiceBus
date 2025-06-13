@@ -49,7 +49,6 @@ await sender.CloseAsync();
 
 async Task SendMessage(string text, string contentType)
 {
-   
     try
     {
         var message = new ServiceBusMessage(Encoding.UTF8.GetBytes(text))

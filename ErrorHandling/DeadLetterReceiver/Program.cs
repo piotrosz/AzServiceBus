@@ -1,14 +1,14 @@
 ﻿using Azure.Messaging.ServiceBus;
 using CommonServiceBusConnectionString;
-using DeadLetterReceiver;
+using Microsoft.VisualBasic.CompilerServices;
+using Spectre.Console;
 
 Thread.Sleep(3000);
 
 var queueClient = new ServiceBusClient(Settings.GetConnectionString());
 var queueName = "errorhandling";
 
-Utils.WriteLine("DeadLetterReceiverConsole", ConsoleColor.White);
-Console.WriteLine();
+AnsiConsole.MarkupLine("[bold white]DeadLetterReceiverConsole[/]");
 
 var options = new ServiceBusProcessorOptions
 {
@@ -44,7 +44,8 @@ async Task ProcessDeadLetterMessage(ProcessMessageEventArgs message)
     Console.WriteLine();
 }
 
-async Task ProcessError(ProcessErrorEventArgs arg)
+Task ProcessError(ProcessErrorEventArgs arg)
 {
-    Utils.WriteLine($"Exception: { arg.Exception.Message }", ConsoleColor.Yellow);
+    AnsiConsole.WriteException(arg.Exception);
+    return Task.CompletedTask;
 }

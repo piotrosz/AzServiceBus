@@ -9,8 +9,8 @@ Utils.WriteLine("ReceiverConsole", ConsoleColor.White);
 Console.WriteLine();
 
 await using var client = new ServiceBusClient(Settings.GetConnectionString());
-var queueName = "errorhandling";
-var forwardingQueue = "forwardingqueue";
+const string queueName = "errorhandling";
+const string forwardingQueue = "forwardingqueue";
 
 await EnsureQueues();
 await ReceiveMessages();
