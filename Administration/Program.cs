@@ -84,8 +84,7 @@ do
     }
     catch (Exception ex)
     {
-        Console.WriteLine();
-        AnsiConsole.MarkupLine($"[red]{ex.Message}[/]");
+        AnsiConsole.WriteException(ex);
     }
 } while (!done);
         

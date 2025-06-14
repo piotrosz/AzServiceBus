@@ -2,7 +2,7 @@
 using Azure.Messaging.ServiceBus;
 using Azure.Messaging.ServiceBus.Administration;
 using CommonServiceBusConnectionString;
-using ErrorHandling.Receiver;
+
 using Newtonsoft.Json;
 
 Utils.WriteLine("ReceiverConsole", ConsoleColor.White);
@@ -154,8 +154,8 @@ async Task EnsureQueues()
     }
 }
 
-async Task ProcessError(ProcessErrorEventArgs arg)
+Task ProcessError(ProcessErrorEventArgs arg)
 {
     Utils.WriteLine($"Exception: { arg.Exception.Message }", ConsoleColor.Yellow);
-    
+    return Task.CompletedTask;
 }

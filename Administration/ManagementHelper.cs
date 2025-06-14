@@ -11,7 +11,7 @@ internal sealed class ManagementHelper(string connectionString)
     public async Task CreateQueueAsync(string queuePath)
     {
         Console.Write("Creating queue {0}...", queuePath);
-        var createQueueOptions = GetQueueOptions(queuePath);
+        var createQueueOptions = GetCreateQueueOptions(queuePath);
         var queueProps = await _managementClient.CreateQueueAsync(createQueueOptions);
         Console.WriteLine("Done!");
         DumpQueueProperties(queueProps);
@@ -69,14 +69,14 @@ internal sealed class ManagementHelper(string connectionString)
     {
         Console.Write("Creating topic {0}...", topicPath);
         var response = await _managementClient.CreateTopicAsync(topicPath);
-        AnsiConsole.MarkupLine($":cloud: Done! {response}");
+        AnsiConsole.MarkupLine($":cloud: Done! Name: '{response.Value.Name}'.");
     }
     
     public async Task CreateSubscriptionAsync(string topicPath, string subscriptionName)
     {
         Console.Write("Creating subscription {0}/subscriptions/{1}...", topicPath, subscriptionName);
         var description = await _managementClient.CreateSubscriptionAsync(topicPath, subscriptionName);
-        Console.WriteLine("Done!");
+        AnsiConsole.MarkupLine($":cloud: Done! Name: {description.Value.SubscriptionName}");
     }
     
     public async Task ListTopicsAndSubscriptionsAsync()
@@ -95,9 +95,8 @@ internal sealed class ManagementHelper(string connectionString)
         Console.WriteLine("Done!");
     }
 
-    private CreateQueueOptions GetQueueOptions(string path)
-    {
-        return new CreateQueueOptions(path)
+    private CreateQueueOptions GetCreateQueueOptions(string path) =>
+        new(path)
         {
             RequiresDuplicateDetection = true,
             //DuplicateDetectionHistoryTimeWindow = TimeSpan.FromMinutes(10),
@@ -106,5 +105,4 @@ internal sealed class ManagementHelper(string connectionString)
             //DefaultMessageTimeToLive = TimeSpan.FromHours(1),
             //EnableDeadLetteringOnMessageExpiration = true
         };
-    }
 }

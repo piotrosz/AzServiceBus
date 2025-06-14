@@ -6,7 +6,7 @@ using Spectre.Console;
 Thread.Sleep(3000);
 
 var queueClient = new ServiceBusClient(Settings.GetConnectionString());
-var queueName = "errorhandling";
+const string queueName = "errorhandling";
 
 AnsiConsole.MarkupLine("[bold white]DeadLetterReceiverConsole[/]");
 
@@ -19,26 +19,29 @@ var options = new ServiceBusProcessorOptions
 
 var processor =  queueClient.CreateProcessor(queueName, options);
 
-Utils.WriteLine($"Dead letter path: {processor.EntityPath}", ConsoleColor.Cyan);
+AnsiConsole.MarkupLine($"[cyan]Dead letter path: {processor.EntityPath}[/]");
 
 processor.ProcessMessageAsync += ProcessDeadLetterMessage;
 processor.ProcessErrorAsync += ProcessError;
 
 await processor.StartProcessingAsync();
 
-Utils.WriteLine("Receiving dead letter messages", ConsoleColor.Cyan);
+AnsiConsole.MarkupLine("[cyan]Receiving dead letter messages[/]");
 Console.WriteLine();
-
 Console.ReadLine();
+
 await processor.StopProcessingAsync();
 await processor.CloseAsync();
 
+return;
+
 async Task ProcessDeadLetterMessage(ProcessMessageEventArgs message)
 {
-    Utils.WriteLine("Received dead letter message", ConsoleColor.Cyan);
-    Utils.WriteLine($"    Content type: { message.Message.ContentType }", ConsoleColor.Green);
-    Utils.WriteLine($"    DeadLetterReason: { message.Message.DeadLetterReason }", ConsoleColor.Green);
-    Utils.WriteLine($"    DeadLetterErrorDescription: { message.Message.DeadLetterErrorDescription }", ConsoleColor.Green);
+    AnsiConsole.MarkupLine("[cyan]Received dead letter message[/]");
+    
+    AnsiConsole.MarkupLine($"[green]Content type: { message.Message.ContentType }[/]");
+    AnsiConsole.MarkupLine($"[green]DeadLetterReason: { message.Message.DeadLetterReason }[/]");
+    AnsiConsole.MarkupLine($"[green]DeadLetterErrorDescription: { message.Message.DeadLetterErrorDescription }[/]");
 
     await message.CompleteMessageAsync(message.Message);
     Console.WriteLine();
