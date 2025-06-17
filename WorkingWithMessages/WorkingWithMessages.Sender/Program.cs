@@ -225,38 +225,18 @@ static async Task SendPizzaOrderListAsBatchAsync()
 static List<PizzaOrder> GetPizzaOrderList()
 {
     // Create some data
-    string[] names = { "Alan", "Jennifer", "James" };
-    string[] pizzas = { "Hawaiian", "Vegetarian", "Capricciosa", "Napolitana" };
+    string[] names = [ "Alan", "Jennifer", "James" ];
+    string[] pizzas = [ "Hawaiian", "Vegetarian", "Capricciosa", "Napolitana" ];
 
     var pizzaOrderList = new List<PizzaOrder>();
     foreach (var pizzaType in pizzas)
     {
-        foreach (var name in names)
+        pizzaOrderList.AddRange(names.Select(name => new PizzaOrder
         {
-            var order = new PizzaOrder
-            {
-                CustomerName = name,
-                Type = pizzaType,
-                Size = "Large"
-            };
-            pizzaOrderList.Add(order);
-        }
+            CustomerName = name, 
+            Type = pizzaType, 
+            Size = "Large"
+        }));
     }
     return pizzaOrderList;
-}
-
-static void WriteLine(string text, ConsoleColor color)
-{
-    var tempColor = Console.ForegroundColor;
-    Console.ForegroundColor = color;
-    Console.WriteLine(text);
-    Console.ForegroundColor = tempColor;
-}
-
-static void Write(string text, ConsoleColor color)
-{
-    var tempColor = Console.ForegroundColor;
-    Console.ForegroundColor = color;
-    Console.Write(text);
-    Console.ForegroundColor = tempColor;
 }

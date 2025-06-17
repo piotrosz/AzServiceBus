@@ -5,7 +5,7 @@ using Azure.Messaging.ServiceBus.Administration;
 using CommonServiceBusConnectionString;
 using Newtonsoft.Json;
 
-await using ServiceBusClient queueClient = new ServiceBusClient(Settings.GetConnectionString());
+await using var queueClient = new ServiceBusClient(Settings.GetConnectionString());
 const string queueName = "workingwithmessages";
 
 WriteLine("Receiver Console", ConsoleColor.White);
