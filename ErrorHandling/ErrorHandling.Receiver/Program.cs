@@ -4,8 +4,9 @@ using Azure.Messaging.ServiceBus.Administration;
 using CommonServiceBusConnectionString;
 
 using Newtonsoft.Json;
+using Spectre.Console;
 
-Utils.WriteLine("ReceiverConsole", ConsoleColor.White);
+AnsiConsole.MarkupLine("[white]ReceiverConsole[/]");
 Console.WriteLine();
 
 await using var client = new ServiceBusClient(Settings.GetConnectionString());
@@ -15,6 +16,7 @@ const string forwardingQueue = "forwardingqueue";
 await EnsureQueues();
 await ReceiveMessages();
 
+return;
 
 async Task ReceiveMessages()
 {
@@ -30,8 +32,8 @@ async Task ReceiveMessages()
     processor.ProcessErrorAsync += ProcessError;
 
     await processor.StartProcessingAsync();
-    Utils.WriteLine("Receiving messages", ConsoleColor.Cyan);
-
+    AnsiConsole.MarkupLine("[cyan]Receiving messages[/]");
+    
     Console.ReadLine();
     await processor.StopProcessingAsync();
     await processor.CloseAsync();
@@ -41,8 +43,8 @@ async Task ReceiveMessages()
 async Task ProcessMessage(ProcessMessageEventArgs args)
 {
     var message = args.Message;
-    Utils.WriteLine("Received: " + message.ContentType, ConsoleColor.Cyan);
-
+    AnsiConsole.MarkupLineInterpolated($"[cyan]Received: {message.ContentType}[/]");
+    
     switch (message.ContentType)
     {
         case "text/plain":
@@ -52,7 +54,7 @@ async Task ProcessMessage(ProcessMessageEventArgs args)
             await ProcessJsonMessage(args);
             break;
         default:
-            Console.WriteLine("Received unknown message: " + message.ContentType);
+            AnsiConsole.MarkupLineInterpolated($"[red]Received unknown message: {message.ContentType}[/]");
 
             // Comment in to abandon message
             //await args.AbandonMessageAsync(message);
@@ -62,18 +64,16 @@ async Task ProcessMessage(ProcessMessageEventArgs args)
                 message,
                 "Unknown message type",
                 "The message type: " + message.ContentType + " is not known.");
-
             break;
     }
 }
-
 
 async Task ProcessTextMessage(ProcessMessageEventArgs args)
 {
     var body = Encoding.UTF8.GetString(args.Message.Body);
 
-    Utils.WriteLine($"Text message: { body } - DeliveryCount: {args.Message.DeliveryCount}", ConsoleColor.Green);
-
+    AnsiConsole.MarkupLineInterpolated($"[green]Text message: {body} - DeliveryCount: {args.Message.DeliveryCount}[/]");
+    
     try
     {
         // Send a message to a forwarding queue
@@ -86,12 +86,12 @@ async Task ProcessTextMessage(ProcessMessageEventArgs args)
         // Complete the message if successfully processed
         await args.CompleteMessageAsync(args.Message);
 
-        Utils.WriteLine("Processed message", ConsoleColor.Cyan);
+        AnsiConsole.MarkupLine("[cyan]Processed message[/]");
     }
     catch (Exception ex)
     {
-        Utils.WriteLine($"Exception: {  ex.Message }", ConsoleColor.Yellow);
-
+        AnsiConsole.WriteException(ex);
+        
         // Comment in to abandon message
         //await args.AbandonMessageAsync(args.Message);
 
@@ -110,30 +110,27 @@ async Task ProcessTextMessage(ProcessMessageEventArgs args)
 
 async Task ProcessJsonMessage(ProcessMessageEventArgs args)
 {
-    Utils.WriteLine($"Message delivery count is {args.Message.DeliveryCount}", ConsoleColor.Green);
+    AnsiConsole.MarkupLineInterpolated($"[green]Message delivery count is {args.Message.DeliveryCount}[/]");
     
     var body = Encoding.UTF8.GetString(args.Message.Body);
-    Utils.WriteLine($"JSON message body { body }" + body, ConsoleColor.Green);
+    AnsiConsole.MarkupLineInterpolated($"[green]JSON message body: {body}[/]");
 
     try
     {                
         dynamic data = JsonConvert.DeserializeObject(body);
-        Utils.WriteLine($"      Name: { data.contact.name }", ConsoleColor.Green);
-        Utils.WriteLine($"      Twitter: { data.contact.twitter }", ConsoleColor.Green);
+        AnsiConsole.MarkupLineInterpolated($"[green]Name: {data.contact.name}[/]");
+        AnsiConsole.MarkupLineInterpolated($"[green]Twitter: {data.contact.twitter}[/]");
 
         // Complete the message if successfully processed
         await args.CompleteMessageAsync(args.Message);
-        Utils.WriteLine("Processed message", ConsoleColor.Cyan);
+        AnsiConsole.MarkupLine("[cyan]Processed message[/]");
     }
     catch (Exception ex)
     {
-        Utils.WriteLine($"Exception: {ex.Message}", ConsoleColor.Yellow);
-
+        AnsiConsole.WriteException(ex);
         await args.DeadLetterMessageAsync(args.Message, ex.Message, ex.ToString());
-
     }
 }
-
 
 async Task EnsureQueues()
 {
@@ -156,6 +153,6 @@ async Task EnsureQueues()
 
 Task ProcessError(ProcessErrorEventArgs arg)
 {
-    Utils.WriteLine($"Exception: { arg.Exception.Message }", ConsoleColor.Yellow);
+    AnsiConsole.WriteException(arg.Exception);
     return Task.CompletedTask;
 }
