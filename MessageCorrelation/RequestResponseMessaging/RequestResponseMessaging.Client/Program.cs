@@ -4,8 +4,8 @@ using Azure.Messaging.ServiceBus;
 using CommonServiceBusConnectionString;
 
 var connectionString = Settings.GetConnectionString();
-var requestQueueName = "requestQueue";
-var responseQueueName = "responseQueue";
+const string requestQueueName = "requestQueue";
+const string responseQueueName = "responseQueue";
 
 await  using var client = new ServiceBusClient(connectionString);
 await using var requestQueueClient = client.CreateSender(requestQueueName);
@@ -38,7 +38,7 @@ while (true)
     var responseMessage = await messageSession.ReceiveMessageAsync();
     stopwatch.Stop();
 
-    string echoText = Encoding.UTF8.GetString(responseMessage.Body);
+    var echoText = Encoding.UTF8.GetString(responseMessage.Body);
 
     Console.ForegroundColor = ConsoleColor.Yellow;
     Console.WriteLine(echoText);

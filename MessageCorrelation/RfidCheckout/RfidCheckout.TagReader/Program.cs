@@ -7,8 +7,8 @@ using static System.Console;
 
 WriteLine("Tag Reader Console (sends messages)");
 
-string connectionString = Settings.GetConnectionString();
-string queueName = "rfidcheckout";
+var connectionString = Settings.GetConnectionString();
+const string queueName = "rfidcheckout";
 
 var client = new ServiceBusClient(connectionString);
 var sender = client.CreateSender(queueName);

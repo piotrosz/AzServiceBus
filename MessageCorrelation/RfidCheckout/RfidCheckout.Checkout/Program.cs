@@ -12,8 +12,8 @@ bool UseMessageSessions = false;
 
 WriteLine("Checkout Console (receives messages)");
 
-string connectionString = Settings.GetConnectionString();
-string queueName = "rfidcheckout";
+var connectionString = Settings.GetConnectionString();
+const string queueName = "rfidcheckout";
 
 var managementClient = new ServiceBusAdministrationClient(connectionString);
 
@@ -75,7 +75,9 @@ else
     await sessionProcessor.StartProcessingAsync();
 }
 
-async Task HandleMessage(ProcessMessageEventArgs message)
+return;
+
+Task HandleMessage(ProcessMessageEventArgs message)
 {
     // Process the order message
     var rfidJson = Encoding.UTF8.GetString(message.Message.Body);
@@ -85,6 +87,8 @@ async Task HandleMessage(ProcessMessageEventArgs message)
 
     ReceivedCount++;
     BillTotal += rfidTag.Price;
+    
+    return Task.CompletedTask;
 }
 
 async Task ProcessSessionMessageHandler(ProcessSessionMessageEventArgs  message)
@@ -115,7 +119,7 @@ async Task ProcessSessionMessageHandler(ProcessSessionMessageEventArgs  message)
 
 }
 
-async Task HandleMessageExceptions(ProcessErrorEventArgs arg)
+Task HandleMessageExceptions(ProcessErrorEventArgs arg)
 {
     throw new NotImplementedException();
 }

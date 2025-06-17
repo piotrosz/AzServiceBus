@@ -5,9 +5,9 @@ using Azure.Messaging.ServiceBus;
 using Azure.Messaging.ServiceBus.Administration;
 using CommonServiceBusConnectionString;
 
-string connectionString = Settings.GetConnectionString();
-string requestQueueName = "requestQueue";
-string responseQueueName = "responseQueue";
+var connectionString = Settings.GetConnectionString();
+const string requestQueueName = "requestQueue";
+const string responseQueueName = "responseQueue";
 
 var serviceBusClient = new ServiceBusClient(connectionString);
 
@@ -57,15 +57,17 @@ await requestQueueClient.StopProcessingAsync();
 await requestQueueClient.CloseAsync();
 await responseQueueClient.CloseAsync();
 
+return;
+
 async Task ProcessRequestMessage(ProcessMessageEventArgs requestMessage)
 {
     // Deserialize the message body into text.
-    string text =  Encoding.UTF8.GetString(requestMessage.Message.Body);
-    Console.WriteLine("Received: " + text);
+    var text =  Encoding.UTF8.GetString(requestMessage.Message.Body);
+    Console.WriteLine($"Received: {text}");
 
     Thread.Sleep(DateTime.Now.Millisecond * 20);
 
-    string echoText = "Echo: " + text;
+    var echoText = $"Echo: {text}";
     var responseMessage = new ServiceBusMessage(Encoding.UTF8.GetBytes(echoText))
     {
         SessionId = requestMessage.Message.ReplyToSessionId
@@ -73,10 +75,10 @@ async Task ProcessRequestMessage(ProcessMessageEventArgs requestMessage)
 
     // Send the response message.
     await responseQueueClient.SendMessageAsync(responseMessage);
-    Console.WriteLine("Sent: " + echoText);
+    Console.WriteLine($"Sent: {echoText}");
 }
 
-async Task ProcessMessageException(ProcessErrorEventArgs arg)
+Task ProcessMessageException(ProcessErrorEventArgs arg)
 {
     throw arg.Exception;
 }
