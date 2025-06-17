@@ -30,6 +30,8 @@ await SendPizzaOrderListAsBatchAsync();
 WriteLine("Sender Console - Complete", ConsoleColor.White);
 Console.ReadLine();
 
+return;
+
 static async Task SendTextString(string text)
 {
     WriteLine("SendTextStringAsMessagesAsync", ConsoleColor.Cyan);
