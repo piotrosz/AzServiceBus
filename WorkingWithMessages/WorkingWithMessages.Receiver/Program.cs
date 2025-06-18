@@ -4,11 +4,12 @@ using Azure.Messaging.ServiceBus;
 using Azure.Messaging.ServiceBus.Administration;
 using CommonServiceBusConnectionString;
 using Newtonsoft.Json;
+using Spectre.Console;
 
 await using var queueClient = new ServiceBusClient(Settings.GetConnectionString());
 const string queueName = "workingwithmessages";
 
-WriteLine("Receiver Console", ConsoleColor.White);
+AnsiConsole.MarkupLine("[bold white]Receiver Console[/]");
 
 await RecreateQueueAsync();
 
@@ -26,27 +27,28 @@ await ReceiveAndProcessText(1);
 
 //await ReceiveAndProcessCharacters(16);
 
+return;
 
 async Task ReceiveAndProcessText(int threads)
 {
-    WriteLine($"ReceiveAndProcessText({ threads })", ConsoleColor.Cyan);
-    
+    AnsiConsole.MarkupLine($"[cyan]ReceiveAndProcessText({threads})[/]");
+
     var options = new ServiceBusProcessorOptions
     {
         AutoCompleteMessages = false,
         MaxConcurrentCalls = threads,
         MaxAutoLockRenewalDuration = TimeSpan.FromSeconds(30)
     };
-    
-    var processor =  queueClient.CreateProcessor(queueName, options);
+
+    var processor = queueClient.CreateProcessor(queueName, options);
 
     processor.ProcessMessageAsync += ProcessTextMessageAsync;
     processor.ProcessErrorAsync += ProcessErrorHandler;
 
-    Console.WriteLine("Start processing");
+    AnsiConsole.WriteLine("Start processing");
     await processor.StartProcessingAsync();
-    
-    WriteLine("Receiving, hit enter to exit", ConsoleColor.White);
+
+    AnsiConsole.MarkupLine("[white]Receiving, hit enter to exit[/]");
     Console.ReadLine();
     await processor.StopProcessingAsync();
     await processor.CloseAsync();
@@ -54,7 +56,7 @@ async Task ReceiveAndProcessText(int threads)
 
 async Task ReceiveAndProcessControlMessage(int threads)
 {
-    WriteLine($"ReceiveAndProcessPizzaOrders({ threads })", ConsoleColor.Cyan);
+    AnsiConsole.MarkupLine($"[cyan]ReceiveAndProcessPizzaOrders({ threads })[/]");
     
     var options = new ServiceBusProcessorOptions
     {
@@ -68,14 +70,14 @@ async Task ReceiveAndProcessControlMessage(int threads)
     processor.ProcessMessageAsync += ProcessControlMessageAsync;
     processor.ProcessErrorAsync += ProcessErrorHandler;
     
-    WriteLine("Receiving, hit enter to exit", ConsoleColor.White);
+    AnsiConsole.MarkupLine("[white]Receiving, hit enter to exit[/]");
     Console.ReadLine();
     await processor.CloseAsync();
 }
 
 async Task ReceiveAndProcessPizzaOrders(int threads)
 {
-    WriteLine($"ReceiveAndProcessPizzaOrders({ threads })", ConsoleColor.Cyan);
+    AnsiConsole.MarkupLine($"[cyan]ReceiveAndProcessPizzaOrders({ threads })[/]");
     
     var options = new ServiceBusProcessorOptions()
     {
@@ -90,7 +92,7 @@ async Task ReceiveAndProcessPizzaOrders(int threads)
     processor.ProcessErrorAsync += ProcessErrorHandler;
     await processor.StartProcessingAsync();
 
-    WriteLine("Receiving, hit enter to exit", ConsoleColor.White);
+    AnsiConsole.MarkupLine("[white]Receiving, hit enter to exit[/]");
     Console.ReadLine();
     await processor.StopProcessingAsync();
     await processor.CloseAsync();
@@ -102,29 +104,35 @@ async Task ProcessPizzaMessageAsync(ProcessMessageEventArgs message)
 
     var pizzaOrder = JsonConvert.DeserializeObject<PizzaOrder>(messageBodyText);
 
-    CookPizza(pizzaOrder);
+    if (pizzaOrder != null)
+    {
+        CookPizza(pizzaOrder);
+    }
+    else
+    {
+        AnsiConsole.MarkupLine("[red]Error: Could not deserialize pizza order[/]");
+    }
 
     await message.CompleteMessageAsync(message.Message);
-
 }
 
 async Task ProcessTextMessageAsync(ProcessMessageEventArgs message)
 {
     var messageBodyText = Encoding.UTF8.GetString(message.Message.Body);
 
-    WriteLine($"Received: { messageBodyText }", ConsoleColor.Green);
+    AnsiConsole.MarkupLine($"[green]Received: {messageBodyText.EscapeMarkup()}[/]");
 
     await message.CompleteMessageAsync(message.Message);
 }
 
 async Task ProcessControlMessageAsync(ProcessMessageEventArgs message)
 {
-    WriteLine($"Received: { message.Message.Subject }", ConsoleColor.Green);
+    AnsiConsole.MarkupLine($"[green]Received: {message.Message.Subject.EscapeMarkup()}[/]");
 
-    WriteLine("User properties...", ConsoleColor.Yellow);
+    AnsiConsole.MarkupLine("[yellow]User properties...[/]");
     foreach (var property in message.Message.ApplicationProperties)
     {
-        WriteLine($"    { property.Key } - { property.Value }", ConsoleColor.Cyan);
+        AnsiConsole.MarkupLine($"[cyan]    {property.Key.EscapeMarkup()} - {property.Value}[/]");
     }
 
     await message.CompleteMessageAsync(message.Message);
@@ -132,13 +140,13 @@ async Task ProcessControlMessageAsync(ProcessMessageEventArgs message)
 
 Task ProcessErrorHandler(ProcessErrorEventArgs exceptionReceivedEventArgs)
 {
-    WriteLine(exceptionReceivedEventArgs.Exception.Message, ConsoleColor.Red);
+    AnsiConsole.MarkupLine($"[red]{exceptionReceivedEventArgs.Exception.Message.EscapeMarkup()}[/]");
     return Task.CompletedTask;
 }
 
 async Task ReceiveAndProcessCharacters(int threads)
 {
-    WriteLine($"ReceiveAndProcessCharacters({ threads })", ConsoleColor.Cyan);
+    AnsiConsole.MarkupLine($"[cyan]ReceiveAndProcessCharacters({ threads })[/]");
     
     var options = new ServiceBusProcessorOptions
     {
@@ -153,7 +161,7 @@ async Task ReceiveAndProcessCharacters(int threads)
     processor.ProcessErrorAsync += ProcessErrorHandler;
     await processor.StartProcessingAsync();
 
-    WriteLine("Receiving, hit enter to exit", ConsoleColor.White);
+    AnsiConsole.MarkupLine("[white]Receiving, hit enter to exit[/]");
     Console.ReadLine();
     await processor.StopProcessingAsync();
     await processor.CloseAsync();
@@ -161,7 +169,7 @@ async Task ReceiveAndProcessCharacters(int threads)
 
 async Task ProcessCharacterMessageAsync(ProcessMessageEventArgs message)
 {
-    Write(message.Message.Subject, ConsoleColor.Green);
+    AnsiConsole.Markup($"[green]{message.Message.Subject.EscapeMarkup()}[/]");
     await message.CompleteMessageAsync(message.Message);
 }
 
@@ -170,36 +178,20 @@ static async Task RecreateQueueAsync()
     var manager = new ServiceBusAdministrationClient(Settings.GetConnectionString());
     if (await manager.QueueExistsAsync(queueName))
     {
-        WriteLine($"Deleting queue: { queueName }...", ConsoleColor.Magenta);
+        AnsiConsole.MarkupLine($"[magenta]Deleting queue: {queueName.EscapeMarkup()}...[/]");
         await manager.DeleteQueueAsync(queueName);
-        WriteLine("Done!", ConsoleColor.Magenta);
+        AnsiConsole.MarkupLine("[magenta]Done![/]");
     }
 
-    WriteLine($"Creating queue: { queueName }...", ConsoleColor.Magenta);
+    AnsiConsole.MarkupLine($"[magenta]Creating queue: {queueName.EscapeMarkup()}...[/]");
     await manager.CreateQueueAsync(queueName);
-    WriteLine("Done!", ConsoleColor.Magenta);
+    AnsiConsole.MarkupLine("[magenta]Done![/]");
 }
 
 static void CookPizza(PizzaOrder order)
 {
-    WriteLine($"Cooking {  order.Type } for { order.CustomerName }.", ConsoleColor.Yellow);
+    AnsiConsole.MarkupLine($"[yellow]Cooking {order.Type.EscapeMarkup()} for {order.CustomerName.EscapeMarkup()}.[/]");
     Thread.Sleep(5000);
-    WriteLine($"    { order.Type } pizza for {  order.CustomerName } is ready!", ConsoleColor.Green);
+    AnsiConsole.MarkupLine($"[green]    {order.Type.EscapeMarkup()} pizza for {order.CustomerName.EscapeMarkup()} is ready![/]");
 }
 
-static void WriteLine(string text, ConsoleColor color)
-{
-    var tempColor = Console.ForegroundColor;
-    Console.ForegroundColor = color;
-    Console.WriteLine(text);
-    Console.ForegroundColor = tempColor;
-}
-
-static void Write(string text, ConsoleColor color)
-{
-    var tempColor = Console.ForegroundColor;
-    Console.ForegroundColor = color;
-    Console.Write(text);
-    Console.ForegroundColor = tempColor;
-}
-    

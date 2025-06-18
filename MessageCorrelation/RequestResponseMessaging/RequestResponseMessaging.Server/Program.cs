@@ -4,6 +4,7 @@ using System.Text;
 using Azure.Messaging.ServiceBus;
 using Azure.Messaging.ServiceBus.Administration;
 using CommonServiceBusConnectionString;
+using Spectre.Console;
 
 var connectionString = Settings.GetConnectionString();
 const string requestQueueName = "requestQueue";
@@ -14,12 +15,12 @@ var serviceBusClient = new ServiceBusClient(connectionString);
 var responseQueueClient = serviceBusClient.CreateSender(responseQueueName);
 var requestQueueClient = serviceBusClient.CreateProcessor(requestQueueName);
 
-Console.WriteLine("Server Console");
+AnsiConsole.MarkupLine("[bold green]Server Console[/]");
 
 // Create a new management client
 var managementClient = new ServiceBusAdministrationClient(connectionString);
 
-Console.Write("Creating queues...");
+AnsiConsole.Markup("[yellow]Creating queues...[/]");
 
 // Delete any existing queues
 if (await managementClient.QueueExistsAsync(requestQueueName))
@@ -34,7 +35,7 @@ if (await managementClient.QueueExistsAsync(responseQueueName))
 
 // Create Request Queue
 var requestQueueResponse = await managementClient.CreateQueueAsync(requestQueueName);
-Console.WriteLine($"Request queue created. {requestQueueResponse.Value}" );
+AnsiConsole.MarkupLine($"[green]Request queue created.[/] {requestQueueResponse.Value}" );
 
 // Create Response With Sessions 
 var createQueueOptions = new CreateQueueOptions(responseQueueName)
@@ -42,14 +43,14 @@ var createQueueOptions = new CreateQueueOptions(responseQueueName)
     RequiresSession = true
 };
 var responseQueueResponse = await managementClient.CreateQueueAsync(createQueueOptions);
-Console.WriteLine($"Response queue created {responseQueueResponse.Value}");
+AnsiConsole.MarkupLine($"[green]Response queue created[/] {responseQueueResponse.Value}");
 
 requestQueueClient.ProcessMessageAsync += ProcessRequestMessage;
 requestQueueClient.ProcessErrorAsync += ProcessMessageException;
 
 await requestQueueClient.StartProcessingAsync();
 
-Console.WriteLine("Processing, hit Enter to exit.");
+AnsiConsole.MarkupLine("[blue]Processing, hit Enter to exit.[/]");
 Console.ReadLine();
 
 await requestQueueClient.StopProcessingAsync();
@@ -63,7 +64,7 @@ async Task ProcessRequestMessage(ProcessMessageEventArgs requestMessage)
 {
     // Deserialize the message body into text.
     var text =  Encoding.UTF8.GetString(requestMessage.Message.Body);
-    Console.WriteLine($"Received: {text}");
+    AnsiConsole.MarkupLine($"[cyan]Received:[/] {text.EscapeMarkup()}");
 
     Thread.Sleep(DateTime.Now.Millisecond * 20);
 
@@ -75,7 +76,7 @@ async Task ProcessRequestMessage(ProcessMessageEventArgs requestMessage)
 
     // Send the response message.
     await responseQueueClient.SendMessageAsync(responseMessage);
-    Console.WriteLine($"Sent: {echoText}");
+    AnsiConsole.MarkupLine($"[green]Sent:[/] {echoText.EscapeMarkup()}");
 }
 
 Task ProcessMessageException(ProcessErrorEventArgs arg)
