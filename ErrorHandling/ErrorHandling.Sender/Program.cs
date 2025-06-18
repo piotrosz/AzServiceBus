@@ -1,22 +1,22 @@
 ﻿using System.Text;
 using Azure.Messaging.ServiceBus;
 using CommonServiceBusConnectionString;
-using ErrorHandling.Sender;
+using Spectre.Console;
 
 await using var client = new ServiceBusClient(Settings.GetConnectionString());
 var queueName = "errorhandling";
 var sender = client.CreateSender(queueName);
 
-Console.WriteLine("Sender Console");
-Console.WriteLine();
+AnsiConsole.Write(new FigletText("Sender Console").Color(Color.Green));
+AnsiConsole.WriteLine();
 
 Thread.Sleep(3000);
 
 while (true)
 {
-    Console.WriteLine("text/json/poison/unknown/exit?");
+    AnsiConsole.MarkupLine("[blue]text/json/poison/unknown/exit?[/]");
 
-    var messageType = Console.ReadLine()?.ToLower();
+    var messageType = AnsiConsole.Ask<string>("[grey]>[/]").ToLower();
 
     if (messageType == "exit")
     {
@@ -38,9 +38,8 @@ while (true)
         case "unknown":
             await SendMessage("Unknown message", "application/unknown");
             break;
-
         default:
-            Console.WriteLine("What?");
+            AnsiConsole.MarkupLine("[red]What?[/]");
             break;
     }
 }
@@ -55,13 +54,13 @@ async Task SendMessage(string text, string contentType)
         {
             ContentType = contentType
         };
-        Utils.WriteLine($"Created Message: { text }", ConsoleColor.Cyan);
-     
+        AnsiConsole.MarkupLine($"[cyan]Created Message: {text.EscapeMarkup()}[/]");
+
         await sender.SendMessageAsync(message);
-        Utils.WriteLine("Sent Message", ConsoleColor.Cyan);
+        AnsiConsole.MarkupLine("[cyan]Sent Message[/]");
     }
     catch (Exception ex)
     {
-        Utils.WriteLine(ex.Message, ConsoleColor.Yellow);
+        AnsiConsole.WriteException(ex);
     }
 }
