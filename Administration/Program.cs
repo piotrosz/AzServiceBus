@@ -5,7 +5,9 @@ using Spectre.Console;
 // Minimum "Stardard" tier to create topics
 
 var serviceBusConnectionString = Settings.GetConnectionString();
- var helper = new ManagementHelper(serviceBusConnectionString);
+var helper = new ManagementHelper(serviceBusConnectionString);
+
+DisplayHelp();
 
 var done = false;
 do
@@ -74,6 +76,8 @@ do
                     break;
                 case "listtopics" or "lt":
                     await helper.ListTopicsAndSubscriptionsAsync();
+                    break;                case "help":
+                    DisplayHelp();
                     break;
                 case "exit":
                     done = true;
@@ -86,5 +90,37 @@ do
         AnsiConsole.WriteException(ex);
     }
 } while (!done);
-        
+
+static void DisplayHelp()
+{    var panel = new Panel(BuildHelpContent())
+    {
+        Border = BoxBorder.Rounded,
+        Header = new PanelHeader("[green]Available Commands[/]"),
+        Padding = new Padding(1, 0, 1, 0)
+    };
+    
+    AnsiConsole.Write(panel);
+}
+
+static Table BuildHelpContent()
+{
+    var table = new Table()
+        .HideHeaders()
+        .Border(TableBorder.None)
+        .AddColumn(new TableColumn("Command").Width(25))
+        .AddColumn(new TableColumn("Description").Width(50));
+    
+    table.AddRow("[cyan]createqueue[/] or [cyan]cq[/] <queue>", "Create a new queue");
+    table.AddRow("[cyan]listqueues[/] or [cyan]lq[/]", "List all queues");
+    table.AddRow("[cyan]getqueue[/] or [cyan]gq[/] <queue>", "Get details of a queue");
+    table.AddRow("[cyan]deletequeue[/] or [cyan]dq[/] <queue>", "Delete a queue");
+    table.AddRow("[cyan]createtopic[/] or [cyan]ct[/] <topic>", "Create a new topic");
+    table.AddRow("[cyan]createsubscription[/] or [cyan]cs[/] <topic> <subscription>", "Create a subscription for a topic");
+    table.AddRow("[cyan]listtopics[/] or [cyan]lt[/]", "List all topics and subscriptions");
+    table.AddRow("[cyan]help[/]", "Show this help panel");
+    table.AddRow("[cyan]exit[/]", "Exit the application");
+    
+    return table;
+}
+    
 
