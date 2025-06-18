@@ -1,10 +1,11 @@
 ﻿using CommonServiceBusConnectionString;
+using Spectre.Console;
 using TopicsAndSubscriptions;
 
 var serviceBusConnectionString = Settings.GetConnectionString();
 const string topicName = "Orders";
 
-Console.WriteLine("Topics and Subscriptions Console");
+AnsiConsole.MarkupLine("[blue]Topics and Subscriptions Console[/]");
 
 PromptAndWait("Press enter to create topic and subscriptions...");
 await CreateTopicsAndSubscriptions();
@@ -19,7 +20,7 @@ PromptAndWait("Topics and Subscriptions Console Complete");
 
 async Task CreateTopicsAndSubscriptions()
 {
-    var manager = new Manager(serviceBusConnectionString);
+    var manager = new SubscriptionsManager(serviceBusConnectionString);
    
     await manager.CreateTopic(topicName);
     await manager.CreateSubscription(topicName, "AllOrders");
@@ -51,7 +52,7 @@ async Task SendOrderMessages()
 
 async Task ReceiveOrdersFromAllSubscriptions()
 {
-    var manager = new Manager(serviceBusConnectionString);
+    var manager = new SubscriptionsManager(serviceBusConnectionString);
 
     // Loop through the subscriptions and process the order messages.
     await foreach (var subscriptionProperties in manager.GetSubscriptionsForTopic(topicName))
@@ -116,9 +117,6 @@ static List<Order> CreateTestOrders()
 
 static void PromptAndWait(string text)
 {
-    var temp = Console.ForegroundColor;
-    Console.ForegroundColor = ConsoleColor.Cyan;
-    Console.WriteLine(text);
-    Console.ForegroundColor = temp;
+    AnsiConsole.MarkupLineInterpolated($"[cyan]{text}[/]");
     Console.ReadLine();
 }

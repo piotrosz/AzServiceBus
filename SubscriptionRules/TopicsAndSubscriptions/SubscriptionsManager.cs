@@ -1,17 +1,12 @@
 ﻿using Azure;
 using Azure.Messaging.ServiceBus.Administration;
+using Spectre.Console;
 
-sealed class Manager
+internal sealed class SubscriptionsManager(string connectionString)
 {
-    private readonly ServiceBusAdministrationClient _administrationClient;
-    public Manager(string connectionString)
+    private readonly ServiceBusAdministrationClient _administrationClient = new(connectionString);    public async Task<TopicProperties> CreateTopic(string topicName)
     {
-        _administrationClient = new ServiceBusAdministrationClient(connectionString);
-    }
-
-    public async Task<TopicProperties> CreateTopic(string topicName)
-    {
-        Console.WriteLine($"Creating Topic { topicName }");
+        AnsiConsole.MarkupLine($"[blue]Creating Topic[/] [green]{ topicName }[/]");
 
         if (await _administrationClient.TopicExistsAsync(topicName))
         {
@@ -19,25 +14,19 @@ sealed class Manager
         }
 
         return await _administrationClient.CreateTopicAsync(topicName);
-    }
-
-    public async Task<SubscriptionProperties> CreateSubscription(string topicName, string subscriptionName)
+    }    public async Task<SubscriptionProperties> CreateSubscription(string topicName, string subscriptionName)
     {
-        Console.WriteLine($"Creating Subscription { topicName }/{ subscriptionName }");
+        AnsiConsole.MarkupLine($"[blue]Creating Subscription[/] [green]{ topicName }[/]/[yellow]{ subscriptionName }[/]");
         return await _administrationClient.CreateSubscriptionAsync(topicName, subscriptionName);
-    }
-
-    public async Task<SubscriptionProperties> CreateSubscriptionWithSqlFilter(string topicName, string subscriptionName, string sqlExpression)
+    }    public async Task<SubscriptionProperties> CreateSubscriptionWithSqlFilter(string topicName, string subscriptionName, string sqlExpression)
     {
-        Console.WriteLine($"Creating Subscription with SQL Filter{ topicName }/{ subscriptionName } ({ sqlExpression })");
+        AnsiConsole.MarkupLine($"[blue]Creating Subscription with SQL Filter[/] [green]{ topicName }[/]/[yellow]{ subscriptionName }[/] ([magenta]{ sqlExpression }[/])");
         var createSubscriptionOptions = new CreateSubscriptionOptions(topicName, subscriptionName);
         var ruleDescription = new CreateRuleOptions("Default", new SqlRuleFilter(sqlExpression));
         return await _administrationClient.CreateSubscriptionAsync(createSubscriptionOptions, ruleDescription);
-    }
-
-    public async Task<SubscriptionProperties> CreateSubscriptionWithCorrelationFilter(string topicName, string subscriptionName, string correlationId)
+    }    public async Task<SubscriptionProperties> CreateSubscriptionWithCorrelationFilter(string topicName, string subscriptionName, string correlationId)
     {
-        Console.WriteLine($"Creating Subscription with Correlation Filter{ topicName }/{ subscriptionName } ({ correlationId })");
+        AnsiConsole.MarkupLine($"[blue]Creating Subscription with Correlation Filter[/] [green]{ topicName }[/]/[yellow]{ subscriptionName }[/] ([magenta]{ correlationId }[/])");
         var createSubscriptionOptions = new CreateSubscriptionOptions(topicName, subscriptionName);
         var ruleDescription = new CreateRuleOptions("Default", new CorrelationRuleFilter(correlationId));
 
