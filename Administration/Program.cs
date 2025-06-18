@@ -10,8 +10,7 @@ var serviceBusConnectionString = Settings.GetConnectionString();
 var done = false;
 do
 {
-    AnsiConsole.MarkupLine("[cyan]>[/]");
-    var commandLine = Console.ReadLine();
+    var commandLine = AnsiConsole.Prompt(new TextPrompt<string>("[cyan]>[/]"));
     var commands = commandLine.Split(' ');
 
     try
