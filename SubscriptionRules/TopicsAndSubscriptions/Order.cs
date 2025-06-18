@@ -18,6 +18,6 @@ record Order
 
     public override string ToString()
     {
-        return $"{ Name }\tItm:{ Items }\t${ Value }\t{ Region }\tLoyal:{ HasLoyaltyCard }";
+        return $"{Name}\tItm:{Items}\t${Value}\t{Region}\tLoyal:{HasLoyaltyCard}";
     }
 }

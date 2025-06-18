@@ -3,12 +3,13 @@ using System.Text;
 using Azure.Messaging.ServiceBus;
 using CommonServiceBusConnectionString;
 using Newtonsoft.Json;
+using Spectre.Console;
 using WorkingWithMessages.MessageEntities;
 
 const string queueName = "workingwithmessages";
 
-WriteLine("Sender Console - Hit enter", ConsoleColor.White);
-Console.ReadLine();
+AnsiConsole.MarkupLine("[white]Sender Console - Hit enter[/]");
+AnsiConsole.Prompt(new TextPrompt<string>("").AllowEmpty());
 
 //ToDo: Comment in the appropriate method
 
@@ -27,26 +28,25 @@ await SendPizzaOrderListAsBatchAsync();
 //await SendTextStringAsBatchAsync("The quick brown fox jumps over the lazy dog");
 
 
-WriteLine("Sender Console - Complete", ConsoleColor.White);
-Console.ReadLine();
+AnsiConsole.MarkupLine("[white]Sender Console - Complete[/]");
+AnsiConsole.Prompt(new TextPrompt<string>("").AllowEmpty());
 
 return;
 
 static async Task SendTextString(string text)
 {
-    WriteLine("SendTextStringAsMessagesAsync", ConsoleColor.Cyan);
+    AnsiConsole.MarkupLine("[cyan]SendTextStringAsMessagesAsync[/]");
 
     await using var client = new ServiceBusClient(Settings.GetConnectionString());
     var sender = client.CreateSender(queueName);
 
-    Write("Sending...", ConsoleColor.Green);
+    AnsiConsole.Markup("[lime]Sending...[/]");
 
     var message = new ServiceBusMessage(Encoding.UTF8.GetBytes(text));
     await sender.SendMessageAsync(message);
+    AnsiConsole.MarkupLine("[lime]Done![/]");
 
-    WriteLine("Done!", ConsoleColor.Green);
-
-    Console.WriteLine();
+    AnsiConsole.WriteLine();
 
     await sender.CloseAsync();
 }
@@ -54,13 +54,13 @@ static async Task SendTextString(string text)
 
 static async Task SendTextStringAsMessagesAsync(string text)
 {
-    WriteLine("SendTextStringAsMessagesAsync", ConsoleColor.Cyan);
+    AnsiConsole.MarkupLine("[cyan]SendTextStringAsMessagesAsync[/]");
 
     // Create a client
     await using var client = new ServiceBusClient(Settings.GetConnectionString());
     var sender = client.CreateSender(queueName);
 
-    Write("Sending:", ConsoleColor.Green);
+    AnsiConsole.Markup("[lime]Sending:[/]");
 
     foreach (var letter in text.ToCharArray())
     {
@@ -68,25 +68,24 @@ static async Task SendTextStringAsMessagesAsync(string text)
         {
             Subject = letter.ToString()
         };
-
         await sender.SendMessageAsync(message);
-        Write(message.MessageId, ConsoleColor.Green);
+        AnsiConsole.Markup($"[lime]{message.MessageId.EscapeMarkup()}[/]");
     }
 
-    Console.WriteLine();
-    Console.WriteLine();
+    AnsiConsole.WriteLine();
+    AnsiConsole.WriteLine();
 
     await sender.CloseAsync();
 }
 
 static async Task SendTextStringAsBatchAsync(string text)
 {
-    WriteLine("SendTextStringAsBatchAsync", ConsoleColor.Cyan);
+    AnsiConsole.MarkupLine("[cyan]SendTextStringAsBatchAsync[/]");
 
     await using var client = new ServiceBusClient(Settings.GetConnectionString());
     var sender = client.CreateSender(queueName);
 
-    Write("Sending:", ConsoleColor.Green);
+    AnsiConsole.Markup("[lime]Sending:[/]");
     
     var messageList = new List<ServiceBusMessage>();
 
@@ -99,19 +98,17 @@ static async Task SendTextStringAsBatchAsync(string text)
 
         messageList.Add(message);
 
-    }
+    }    await sender.SendMessagesAsync(messageList);
 
-    await sender.SendMessagesAsync(messageList);
-
-    Console.WriteLine();
-    Console.WriteLine();
+    AnsiConsole.WriteLine();
+    AnsiConsole.WriteLine();
 
     await sender.CloseAsync();
 }
 
 static async Task SendControlMessageAsync()
 {
-    WriteLine("SendControlMessageAsync", ConsoleColor.Cyan);
+    AnsiConsole.MarkupLine("[cyan]SendControlMessageAsync[/]");
 
     var message = new ServiceBusMessage()
     {
@@ -123,18 +120,17 @@ static async Task SendControlMessageAsync()
     message.ApplicationProperties.Add("ActionTime", DateTime.UtcNow.AddHours(2));
 
     await using var client = new ServiceBusClient(Settings.GetConnectionString());
-    var sender = client.CreateSender(queueName);
-
-    Write("Sending control message...", ConsoleColor.Green);
+    var sender = client.CreateSender(queueName);   
+    AnsiConsole.Markup("[lime]Sending control message...[/]");
     await sender.SendMessageAsync(message);
-    WriteLine("Done!", ConsoleColor.Green);
-    Console.WriteLine();
+    AnsiConsole.MarkupLine("[lime]Done![/]");
+    AnsiConsole.WriteLine();
     await sender.CloseAsync();
 }
 
 static async Task SendPizzaOrderAsync()
 {
-    WriteLine("SendPizzaOrderAsync", ConsoleColor.Cyan);
+    AnsiConsole.MarkupLine("[cyan]SendPizzaOrderAsync[/]");
 
     var order = new PizzaOrder()
     {
@@ -153,23 +149,22 @@ static async Task SendPizzaOrderAsync()
 
     await using var client = new ServiceBusClient(Settings.GetConnectionString());
     var sender = client.CreateSender(queueName);
-    Write("Sending order...", ConsoleColor.Green);
+    AnsiConsole.Markup("[lime]Sending order...[/]");
     await sender.SendMessageAsync(message);
-    WriteLine("Done!", ConsoleColor.Green);
-    Console.WriteLine();
+    AnsiConsole.MarkupLine("[lime]Done![/]");
+    AnsiConsole.WriteLine();
     await sender.CloseAsync();
 }
 
 static async Task SendPizzaOrderListAsMessagesAsync()
 {
-    WriteLine("SendPizzaOrderListAsMessagesAsync", ConsoleColor.Cyan);
+    AnsiConsole.MarkupLine("[cyan]SendPizzaOrderListAsMessagesAsync[/]");
 
     var pizzaOrderList = GetPizzaOrderList();
-
     await using var client = new ServiceBusClient(Settings.GetConnectionString());
     var sender = client.CreateSender(queueName);
 
-    WriteLine("Sending...", ConsoleColor.Yellow);
+    AnsiConsole.MarkupLine("[yellow]Sending...[/]");
     var watch = Stopwatch.StartNew();
 
     foreach (var pizzaOrder in pizzaOrderList)
@@ -183,16 +178,16 @@ static async Task SendPizzaOrderListAsMessagesAsync()
         };
         await sender.SendMessageAsync(message);
     }
-
     await sender.CloseAsync();
-    WriteLine($"Sent { pizzaOrderList.Count } orders! - Time: { watch.ElapsedMilliseconds } milliseconds, that's { pizzaOrderList.Count / watch.Elapsed.TotalSeconds } messages per second.", ConsoleColor.Green);
-    Console.WriteLine();
-    Console.WriteLine();
+    AnsiConsole.MarkupLineInterpolated($"[lime]Sent {pizzaOrderList.Count} orders! - Time: {watch.ElapsedMilliseconds} milliseconds, that's {pizzaOrderList.Count / watch.Elapsed.TotalSeconds} messages per second.[/]");
+
+    AnsiConsole.WriteLine();
+    AnsiConsole.WriteLine();
 }
 
 static async Task SendPizzaOrderListAsBatchAsync()
 {
-    WriteLine("SendPizzaOrderListAsBatchAsync", ConsoleColor.Cyan);
+    AnsiConsole.MarkupLine("[cyan]SendPizzaOrderListAsBatchAsync[/]");
 
     var pizzaOrderList = GetPizzaOrderList();
     await using var client = new ServiceBusClient(Settings.GetConnectionString());
@@ -209,22 +204,19 @@ static async Task SendPizzaOrderListAsBatchAsync()
             Subject = "PizzaOrder",
             ContentType = "application/json"
         };
-        messageList.Add(message);
-    }
+        messageList.Add(message);    }
 
-    WriteLine("Sending...", ConsoleColor.Yellow);
+    AnsiConsole.MarkupLine("[yellow]Sending...[/]");
     await sender.SendMessagesAsync(messageList);
-
     await sender.CloseAsync();
 
-    WriteLine($"Sent { pizzaOrderList.Count } orders! - Time: { watch.ElapsedMilliseconds } milliseconds, that's { pizzaOrderList.Count / watch.Elapsed.TotalSeconds } messages per second.", ConsoleColor.Green);
-    Console.WriteLine();
-    Console.WriteLine();
+    AnsiConsole.MarkupLineInterpolated($"[lime]Sent {pizzaOrderList.Count} orders! - Time: {watch.ElapsedMilliseconds} milliseconds, that's {pizzaOrderList.Count / watch.Elapsed.TotalSeconds} messages per second.[/]");
+    AnsiConsole.WriteLine();
+    AnsiConsole.WriteLine();
 }
 
 static List<PizzaOrder> GetPizzaOrderList()
 {
-    // Create some data
     string[] names = [ "Alan", "Jennifer", "James" ];
     string[] pizzas = [ "Hawaiian", "Vegetarian", "Capricciosa", "Napolitana" ];
 
