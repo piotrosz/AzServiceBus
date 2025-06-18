@@ -76,7 +76,8 @@ do
                     break;
                 case "listtopics" or "lt":
                     await helper.ListTopicsAndSubscriptionsAsync();
-                    break;                case "help":
+                    break;
+                case "help":
                     DisplayHelp();
                     break;
                 case "exit":
@@ -122,5 +123,5 @@ static Table BuildHelpContent()
     
     return table;
 }
-    
+
 
