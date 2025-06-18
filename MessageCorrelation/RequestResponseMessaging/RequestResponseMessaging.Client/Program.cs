@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using Azure.Messaging.ServiceBus;
 using CommonServiceBusConnectionString;
+using Spectre.Console;
 
 var connectionString = Settings.GetConnectionString();
 const string requestQueueName = "requestQueue";
@@ -11,13 +12,12 @@ await  using var client = new ServiceBusClient(connectionString);
 await using var requestQueueClient = client.CreateSender(requestQueueName);
 //await using var responseQueueClient = client.CreateSessionProcessor(responseQueueName);
 
-Console.WriteLine("Client Console");
+AnsiConsole.Write(new FigletText("Client Console").Color(Color.Blue));
 
 while (true)
 {
-    Console.ForegroundColor = ConsoleColor.White;
-    Console.WriteLine("Enter text:");
-    var text = Console.ReadLine() ?? "";
+    AnsiConsole.MarkupLine("[white]Enter text:[/]");
+    var text = AnsiConsole.Ask<string>("[grey]>[/]");
 
     // Create a session identifier for the response message
     var responseSessionId = Guid.NewGuid().ToString();
@@ -36,15 +36,11 @@ while (true)
 
     // Receive the response message.
     var responseMessage = await messageSession.ReceiveMessageAsync();
-    stopwatch.Stop();
+    stopwatch.Stop();    var echoText = Encoding.UTF8.GetString(responseMessage.Body);
 
-    var echoText = Encoding.UTF8.GetString(responseMessage.Body);
-
-    Console.ForegroundColor = ConsoleColor.Yellow;
-    Console.WriteLine(echoText);
-    Console.ForegroundColor = ConsoleColor.White;
-    Console.WriteLine("Time: {0} ms.", stopwatch.ElapsedMilliseconds);
-    Console.WriteLine();
+    AnsiConsole.MarkupLine($"[yellow]{echoText.EscapeMarkup()}[/]");
+    AnsiConsole.MarkupLine($"[white]Time: {stopwatch.ElapsedMilliseconds} ms.[/]");
+    AnsiConsole.WriteLine();
 }
 
 

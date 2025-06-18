@@ -4,7 +4,7 @@ using CommonServiceBusConnectionString;
 using Spectre.Console;
 
 await using var client = new ServiceBusClient(Settings.GetConnectionString());
-var queueName = "errorhandling";
+const string queueName = "errorhandling";
 var sender = client.CreateSender(queueName);
 
 AnsiConsole.Write(new FigletText("Sender Console").Color(Color.Green));
