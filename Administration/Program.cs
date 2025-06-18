@@ -21,7 +21,8 @@ do
         {
             switch (commands[0])
             {
-                case "createqueue" or "cq" :
+                case Commands.CreateQueue:
+                case Commands.CreateQueueShort:
                     if (commands.Length > 1)
                     {
                         await helper.CreateQueueAsync(commands[1]);
@@ -31,10 +32,12 @@ do
                         AnsiConsole.MarkupLine("[yellow]Queue path not specified.[/]");
                     }
                     break;
-                case "listqueues" or "lq" :
+                case Commands.ListQueues:
+                case Commands.ListQueuesShort:
                     await helper.ListQueuesAsync();
                     break;
-                case "getqueue" or "gq" :
+                case Commands.GetQueue:
+                case Commands.GetQueueShort:
                     if (commands.Length > 1)
                     {
                         await helper.GetQueueAsync(commands[1]);
@@ -44,7 +47,8 @@ do
                         AnsiConsole.MarkupLine("[yellow]Queue path not specified.[/]");
                     }
                     break;
-                case "deletequeue" or "dq" :
+                case Commands.DeleteQueue:
+                case Commands.DeleteQueueShort:
                     if (commands.Length > 1)
                     {
                         await helper.DeleteQueueAsync(commands[1]);
@@ -54,7 +58,8 @@ do
                         AnsiConsole.MarkupLine("[yellow]Queue path not specified.[/]");
                     }
                     break;
-                case "createtopic" or "ct":
+                case Commands.CreateTopic:
+                case Commands.CreateTopicShort:
                     if (commands.Length > 1)
                     {
                         await helper.CreateTopicAsync(commands[1]);
@@ -64,7 +69,8 @@ do
                         AnsiConsole.MarkupLine("[yellow]Topic path not specified.[/]");
                     }
                     break;
-                case "createsubscription" or "cs":
+                case Commands.CreateSubscription:
+                case Commands.CreateSubscriptionShort:
                     if (commands.Length > 2)
                     {
                         await helper.CreateSubscriptionAsync(commands[1], commands[2]);
@@ -74,13 +80,14 @@ do
                         AnsiConsole.MarkupLine("[yellow]Topic path not specified.[/]");
                     }
                     break;
-                case "listtopics" or "lt":
+                case Commands.ListTopics:
+                case Commands.ListTopicsShort:
                     await helper.ListTopicsAndSubscriptionsAsync();
                     break;
-                case "help":
+                case Commands.Help:
                     DisplayHelp();
                     break;
-                case "exit":
+                case Commands.Exit:
                     done = true;
                     break;
             }
@@ -110,16 +117,15 @@ static Table BuildHelpContent()
         .Border(TableBorder.None)
         .AddColumn(new TableColumn("Command").Width(25))
         .AddColumn(new TableColumn("Description").Width(50));
-    
-    table.AddRow("[cyan]createqueue[/] or [cyan]cq[/] <queue>", "Create a new queue");
-    table.AddRow("[cyan]listqueues[/] or [cyan]lq[/]", "List all queues");
-    table.AddRow("[cyan]getqueue[/] or [cyan]gq[/] <queue>", "Get details of a queue");
-    table.AddRow("[cyan]deletequeue[/] or [cyan]dq[/] <queue>", "Delete a queue");
-    table.AddRow("[cyan]createtopic[/] or [cyan]ct[/] <topic>", "Create a new topic");
-    table.AddRow("[cyan]createsubscription[/] or [cyan]cs[/] <topic> <subscription>", "Create a subscription for a topic");
-    table.AddRow("[cyan]listtopics[/] or [cyan]lt[/]", "List all topics and subscriptions");
-    table.AddRow("[cyan]help[/]", "Show this help panel");
-    table.AddRow("[cyan]exit[/]", "Exit the application");
+      table.AddRow($"[cyan]{Commands.CreateQueue}[/] or [cyan]{Commands.CreateQueueShort}[/] <queue>", "Create a new queue");
+    table.AddRow($"[cyan]{Commands.ListQueues}[/] or [cyan]{Commands.ListQueuesShort}[/]", "List all queues");
+    table.AddRow($"[cyan]{Commands.GetQueue}[/] or [cyan]{Commands.GetQueueShort}[/] <queue>", "Get details of a queue");
+    table.AddRow($"[cyan]{Commands.DeleteQueue}[/] or [cyan]{Commands.DeleteQueueShort}[/] <queue>", "Delete a queue");
+    table.AddRow($"[cyan]{Commands.CreateTopic}[/] or [cyan]{Commands.CreateTopicShort}[/] <topic>", "Create a new topic");
+    table.AddRow($"[cyan]{Commands.CreateSubscription}[/] or [cyan]{Commands.CreateSubscriptionShort}[/] <topic> <subscription>", "Create a subscription for a topic");
+    table.AddRow($"[cyan]{Commands.ListTopics}[/] or [cyan]{Commands.ListTopicsShort}[/]", "List all topics and subscriptions");
+    table.AddRow($"[cyan]{Commands.Help}[/]", "Show this help panel");
+    table.AddRow($"[cyan]{Commands.Exit}[/]", "Exit the application");
     
     return table;
 }
