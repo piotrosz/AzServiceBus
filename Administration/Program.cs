@@ -1,11 +1,12 @@
-﻿using AzServiceBusAdministration;
+﻿using System.Reflection;
+using AzServiceBusAdministration;
 using CommonServiceBusConnectionString;
 using Spectre.Console;
 
 // Minimum "Stardard" tier to create topics
 
-var serviceBusConnectionString = Settings.GetConnectionString();
-var helper = new ManagementHelper(serviceBusConnectionString);
+var serviceBusConnectionString = Settings.GetConnectionString(Assembly.GetExecutingAssembly());
+var managementHelper = new ManagementHelper(serviceBusConnectionString);
 
 DisplayHelp();
 
@@ -25,7 +26,7 @@ do
                 case Commands.CreateQueueShort:
                     if (commands.Length > 1)
                     {
-                        await helper.CreateQueueAsync(commands[1]);
+                        await managementHelper.CreateQueueAsync(commands[1]);
                     }
                     else
                     {
@@ -34,13 +35,13 @@ do
                     break;
                 case Commands.ListQueues:
                 case Commands.ListQueuesShort:
-                    await helper.ListQueuesAsync();
+                    await managementHelper.ListQueuesAsync();
                     break;
                 case Commands.GetQueue:
                 case Commands.GetQueueShort:
                     if (commands.Length > 1)
                     {
-                        await helper.GetQueueAsync(commands[1]);
+                        await managementHelper.GetQueueAsync(commands[1]);
                     }
                     else
                     {
@@ -51,7 +52,7 @@ do
                 case Commands.DeleteQueueShort:
                     if (commands.Length > 1)
                     {
-                        await helper.DeleteQueueAsync(commands[1]);
+                        await managementHelper.DeleteQueueAsync(commands[1]);
                     }
                     else
                     {
@@ -62,7 +63,7 @@ do
                 case Commands.CreateTopicShort:
                     if (commands.Length > 1)
                     {
-                        await helper.CreateTopicAsync(commands[1]);
+                        await managementHelper.CreateTopicAsync(commands[1]);
                     }
                     else
                     {
@@ -73,7 +74,7 @@ do
                 case Commands.CreateSubscriptionShort:
                     if (commands.Length > 2)
                     {
-                        await helper.CreateSubscriptionAsync(commands[1], commands[2]);
+                        await managementHelper.CreateSubscriptionAsync(commands[1], commands[2]);
                     }
                     else
                     {
@@ -82,7 +83,7 @@ do
                     break;
                 case Commands.ListTopics:
                 case Commands.ListTopicsShort:
-                    await helper.ListTopicsAndSubscriptionsAsync();
+                    await managementHelper.ListTopicsAndSubscriptionsAsync();
                     break;
                 case Commands.Help:
                     DisplayHelp();

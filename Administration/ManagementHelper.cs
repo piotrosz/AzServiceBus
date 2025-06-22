@@ -1,16 +1,21 @@
 ﻿using Azure;
 using Azure.Messaging.ServiceBus.Administration;
+using Microsoft.Azure.Amqp.Transport;
 using Spectre.Console;
 
 namespace AzServiceBusAdministration;
 
 internal sealed class ManagementHelper(string connectionString)
 {
-    private readonly ServiceBusAdministrationClient _managementClient = new(connectionString);
-
+    private readonly ServiceBusAdministrationClient _managementClient = new(connectionString, 
+        new ServiceBusAdministrationClientOptions()
+        {
+            Retry = { MaxRetries = 2}
+        });
+    
     public async Task CreateQueueAsync(string queuePath)
     {
-        Console.Write("Creating queue {0}...", queuePath);
+        Console.Write("Creating queue: {0}...", queuePath);
         var createQueueOptions = GetCreateQueueOptions(queuePath);
         var queueProps = await _managementClient.CreateQueueAsync(createQueueOptions);
         Console.WriteLine("Done!");
@@ -19,7 +24,7 @@ internal sealed class ManagementHelper(string connectionString)
 
     public async Task DeleteQueueAsync(string queuePath)
     {
-        Console.Write("Deleting queue {0}...", queuePath);
+        Console.Write("Deleting queue: {0}...", queuePath);
         await _managementClient.DeleteQueueAsync(queuePath);
         AnsiConsole.MarkupLine(":cloud: Done!");
     }
@@ -38,7 +43,7 @@ internal sealed class ManagementHelper(string connectionString)
     public async Task GetQueueAsync(string queuePath)
     {
         var properties = await _managementClient.GetQueueAsync(queuePath);
-        Console.WriteLine($"Queue description for { queuePath }");
+        Console.WriteLine($"Queue description for: {queuePath}");
         DumpQueueProperties(properties);
     }
 
