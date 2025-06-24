@@ -7,19 +7,19 @@ using CommonServiceBusConnectionString;
 using Newtonsoft.Json;
 using Spectre.Console;
 
-AnsiConsole.MarkupLine("[white]ReceiverConsole[/]");
-Console.WriteLine();
+AnsiConsole.Write(new FigletText("Receiver Console").Color(Color.Green));
+AnsiConsole.WriteLine();
 
 await using var client = new ServiceBusClient(Settings.GetConnectionString(Assembly.GetExecutingAssembly()));
 const string queueName = "errorhandling";
 const string forwardingQueue = "forwardingqueue";
 
 await EnsureQueues();
-await ReceiveMessages();
+await ReceiveMessages(client);
 
 return;
 
-async Task ReceiveMessages()
+async Task ReceiveMessages(ServiceBusClient client)
 {
     var options = new ServiceBusProcessorOptions
     {
@@ -58,13 +58,13 @@ async Task ProcessMessage(ProcessMessageEventArgs args)
             AnsiConsole.MarkupLineInterpolated($"[red]Received unknown message: {message.ContentType}[/]");
 
             // Comment in to abandon message
-            //await args.AbandonMessageAsync(message);
+            // await args.AbandonMessageAsync(message);
 
             // Comment in to dead letter message
             await args.DeadLetterMessageAsync(
                 message,
                 "Unknown message type",
-                "The message type: " + message.ContentType + " is not known.");
+                $"The message type: {message.ContentType} is not known.");
             break;
     }
 }

@@ -3,12 +3,13 @@ using Azure.Messaging.ServiceBus;
 using CommonServiceBusConnectionString;
 using Spectre.Console;
 
-Thread.Sleep(3000);
+await Task.Delay(TimeSpan.FromSeconds(3));
 
 var queueClient = new ServiceBusClient(Settings.GetConnectionString(Assembly.GetExecutingAssembly()));
 const string queueName = "errorhandling";
 
-AnsiConsole.MarkupLine("[bold white]DeadLetterReceiverConsole[/]");
+AnsiConsole.Write(new FigletText("Dead letter Receiver Console").Color(Color.Red1));
+AnsiConsole.WriteLine();
 
 var options = new ServiceBusProcessorOptions
 {
