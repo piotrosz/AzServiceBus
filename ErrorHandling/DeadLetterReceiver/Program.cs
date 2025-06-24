@@ -40,9 +40,9 @@ async Task ProcessDeadLetterMessage(ProcessMessageEventArgs message)
 {
     AnsiConsole.MarkupLine("[cyan]Received dead letter message[/]");
     
-    AnsiConsole.MarkupLine($"[green]Content type: { message.Message.ContentType }[/]");
-    AnsiConsole.MarkupLine($"[green]DeadLetterReason: { message.Message.DeadLetterReason }[/]");
-    AnsiConsole.MarkupLine($"[green]DeadLetterErrorDescription: { message.Message.DeadLetterErrorDescription }[/]");
+    AnsiConsole.MarkupLineInterpolated($"[green]Content type: {message.Message.ContentType}[/]");
+    AnsiConsole.MarkupLineInterpolated($"[green]DeadLetterReason: {message.Message.DeadLetterReason}[/]");
+    AnsiConsole.MarkupLineInterpolated($"[green]DeadLetterErrorDescription: {message.Message.DeadLetterErrorDescription}[/]");
 
     await message.CompleteMessageAsync(message.Message);
     Console.WriteLine();

@@ -10,7 +10,8 @@ using Spectre.Console;
 AnsiConsole.Write(new FigletText("Receiver Console").Color(Color.Green));
 AnsiConsole.WriteLine();
 
-await using var client = new ServiceBusClient(Settings.GetConnectionString(Assembly.GetExecutingAssembly()));
+string connectionString = Settings.GetConnectionString(Assembly.GetExecutingAssembly());
+await using var client = new ServiceBusClient(connectionString);
 const string queueName = "errorhandling";
 const string forwardingQueue = "forwardingqueue";
 
@@ -151,7 +152,7 @@ async Task ProcessJsonMessage(ProcessMessageEventArgs args)
 
 async Task EnsureQueues()
 {
-    var managementClient = new ServiceBusAdministrationClient(Settings.GetConnectionString(Assembly.GetExecutingAssembly()));
+    var managementClient = new ServiceBusAdministrationClient(connectionString);
            
     if (!await managementClient.QueueExistsAsync(queueName))
     {

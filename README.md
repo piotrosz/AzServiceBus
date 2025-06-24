@@ -26,4 +26,8 @@ Subscriptions with different SQL filters.
 
 ### Error handling
 
-
+3 console apps:
+- Sender
+- Receiver can handle message or send to dead letter queue on error.
+Creates queue and forwarding queue.
+- Dead letter receiver 
