@@ -4,9 +4,9 @@ using Newtonsoft.Json;
 using RfidCheckout.Messages;
 using System.Reflection;
 using System.Text;
-using static System.Console;
+using Spectre.Console;
 
-WriteLine("Tag Reader Console (sends messages)");
+AnsiConsole.MarkupLine("[bold]Tag Reader Console (sends messages)[/]");
 
 var connectionString = Settings.GetConnectionString(Assembly.GetExecutingAssembly());
 const string queueName = "rfidcheckout";
@@ -19,31 +19,26 @@ var orderItems = new RfidTag[]
         new("Ball", 4.99),
         new("Whistle", 1.95),
         new("Bat", 12.99),
-        new("Bat", 12.99),
+        new("Bat 2", 13.99),
         new("Gloves", 7.99),
         new("Cap", 9.99),
         new("Shirt", 14.99),
-        new("Shirt",  14.99),
+        new("Shirt 2",  15.99),
 };
 
 // Display the order data.
-ForegroundColor = ConsoleColor.Green;
-WriteLine("Order contains {0} items.", orderItems.Length);
-ForegroundColor = ConsoleColor.Yellow;
+AnsiConsole.MarkupLine("[green]Order contains {0} items.[/]", orderItems.Length);
 
 var orderTotal = 0.0;
 foreach (var tag in orderItems)
 {
-    WriteLine("{0} - ${1}", tag.Product, tag.Price);
+    AnsiConsole.MarkupLine("{0} - ${1}", tag.Product, tag.Price);
     orderTotal += tag.Price;
 }
-ForegroundColor = ConsoleColor.Green;
-WriteLine("Order value = ${0}.", orderTotal);
-WriteLine();
-ResetColor();
+AnsiConsole.MarkupLine("[green]Order value = ${0}.[/]", orderTotal);
 
-WriteLine("Press enter to scan...");
-ReadLine();
+AnsiConsole.WriteLine("Press enter to scan...");
+Console.ReadLine();
 
 var random = new Random(DateTime.Now.Millisecond);
 
@@ -51,9 +46,7 @@ var random = new Random(DateTime.Now.Millisecond);
 var sentCount = 0;
 var position = 0;
 
-WriteLine("Reading tags...");
-WriteLine();
-ForegroundColor = ConsoleColor.Cyan;
+AnsiConsole.MarkupLine("Reading tags...");
 
 // Comment in to create session id
 //var sessionId = Guid.NewGuid().ToString();
@@ -75,7 +68,7 @@ while (position < 10)
 
     // Send the message
     await sender.SendMessageAsync(tagReadMessage);
-    WriteLine($"Sent: { orderItems[position].Product }");
+    Console.WriteLine($"Sent: { orderItems[position].Product }");
     //WriteLine($"Sent: { orderItems[position].Product } - MessageId: { tagReadMessage.MessageId }");
 
     // Randomly cause a duplicate message to be sent.
@@ -85,11 +78,5 @@ while (position < 10)
     Thread.Sleep(100);
 }
 
-ForegroundColor = ConsoleColor.Green;
-WriteLine("{0} total tag reads.", sentCount);
-WriteLine();
-ResetColor();
-
-ReadLine();
-
-        
+AnsiConsole.MarkupLine("[green]{0} total tag reads.[/]", sentCount);
+Console.ReadLine();
