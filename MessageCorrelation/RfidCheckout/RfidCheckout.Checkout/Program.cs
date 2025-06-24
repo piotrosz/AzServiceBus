@@ -1,9 +1,10 @@
-﻿using System.Text;
-using Azure.Messaging.ServiceBus;
+﻿using Azure.Messaging.ServiceBus;
 using Azure.Messaging.ServiceBus.Administration;
 using CommonServiceBusConnectionString;
 using Newtonsoft.Json;
 using RfidCheckout.Messages;
+using System.Reflection;
+using System.Text;
 using static System.Console;
 
 int ReceivedCount = 0;
@@ -12,7 +13,7 @@ bool UseMessageSessions = false;
 
 WriteLine("Checkout Console (receives messages)");
 
-var connectionString = Settings.GetConnectionString();
+var connectionString = Settings.GetConnectionString(Assembly.GetExecutingAssembly());
 const string queueName = "rfidcheckout";
 
 var managementClient = new ServiceBusAdministrationClient(connectionString);

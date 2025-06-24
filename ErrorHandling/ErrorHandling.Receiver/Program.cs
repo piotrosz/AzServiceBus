@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Reflection;
+using System.Text;
 using Azure.Messaging.ServiceBus;
 using Azure.Messaging.ServiceBus.Administration;
 using CommonServiceBusConnectionString;
@@ -9,7 +10,7 @@ using Spectre.Console;
 AnsiConsole.MarkupLine("[white]ReceiverConsole[/]");
 Console.WriteLine();
 
-await using var client = new ServiceBusClient(Settings.GetConnectionString());
+await using var client = new ServiceBusClient(Settings.GetConnectionString(Assembly.GetExecutingAssembly()));
 const string queueName = "errorhandling";
 const string forwardingQueue = "forwardingqueue";
 
@@ -113,11 +114,27 @@ async Task ProcessJsonMessage(ProcessMessageEventArgs args)
     AnsiConsole.MarkupLineInterpolated($"[green]Message delivery count is {args.Message.DeliveryCount}[/]");
     
     var body = Encoding.UTF8.GetString(args.Message.Body);
+
+    if (string.IsNullOrWhiteSpace(body))
+    {
+        AnsiConsole.MarkupLine("[red]Message body is empty or whitespace.[/]");
+        await args.DeadLetterMessageAsync(args.Message, "Empty message body", "The message body was empty or whitespace.");
+        return;
+    }
+
     AnsiConsole.MarkupLineInterpolated($"[green]JSON message body: {body}[/]");
 
     try
     {                
-        dynamic data = JsonConvert.DeserializeObject(body);
+        dynamic? data = JsonConvert.DeserializeObject(body);
+
+        if (data is null)
+        {
+            AnsiConsole.MarkupLine("[red]Cannot deserialize message body.[/]");
+            await args.DeadLetterMessageAsync(args.Message, "Empty message body", "The message body was empty or whitespace.");
+            return;
+        }
+
         AnsiConsole.MarkupLineInterpolated($"[green]Name: {data.contact.name}[/]");
         AnsiConsole.MarkupLineInterpolated($"[green]Twitter: {data.contact.twitter}[/]");
 
@@ -134,7 +151,7 @@ async Task ProcessJsonMessage(ProcessMessageEventArgs args)
 
 async Task EnsureQueues()
 {
-    var managementClient = new ServiceBusAdministrationClient(Settings.GetConnectionString());
+    var managementClient = new ServiceBusAdministrationClient(Settings.GetConnectionString(Assembly.GetExecutingAssembly()));
            
     if (!await managementClient.QueueExistsAsync(queueName))
     {

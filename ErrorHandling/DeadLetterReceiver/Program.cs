@@ -1,11 +1,11 @@
-﻿using Azure.Messaging.ServiceBus;
+﻿using System.Reflection;
+using Azure.Messaging.ServiceBus;
 using CommonServiceBusConnectionString;
-using Microsoft.VisualBasic.CompilerServices;
 using Spectre.Console;
 
 Thread.Sleep(3000);
 
-var queueClient = new ServiceBusClient(Settings.GetConnectionString());
+var queueClient = new ServiceBusClient(Settings.GetConnectionString(Assembly.GetExecutingAssembly()));
 const string queueName = "errorhandling";
 
 AnsiConsole.MarkupLine("[bold white]DeadLetterReceiverConsole[/]");

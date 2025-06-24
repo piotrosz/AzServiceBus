@@ -1,9 +1,10 @@
-﻿using System.Text;
-using Azure.Messaging.ServiceBus;
+﻿using Azure.Messaging.ServiceBus;
 using Azure.Messaging.ServiceBus.Administration;
 using CommonServiceBusConnectionString;
+using System.Reflection;
+using System.Text;
 
-var serviceBusConnectionString = Settings.GetConnectionString();
+var serviceBusConnectionString = Settings.GetConnectionString(Assembly.GetExecutingAssembly());
 const string topicName = "chattopic";
 
 Console.WriteLine("Enter your name:");

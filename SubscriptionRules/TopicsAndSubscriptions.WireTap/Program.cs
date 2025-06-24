@@ -1,11 +1,12 @@
-﻿using System.Text;
-using Azure.Messaging.ServiceBus;
+﻿using Azure.Messaging.ServiceBus;
 using Azure.Messaging.ServiceBus.Administration;
 using CommonServiceBusConnectionString;
 using Spectre.Console;
+using System.Reflection;
+using System.Text;
 using static System.Console;
 
-var serviceBusConnectionString = Settings.GetConnectionString();
+var serviceBusConnectionString = Settings.GetConnectionString(Assembly.GetExecutingAssembly());
 const string topicName = "Orders";
 
 AnsiConsole.MarkupLine("[bold blue]Wire Tap Console[/]");

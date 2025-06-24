@@ -1,9 +1,10 @@
-﻿using System.Text;
-using Azure.Messaging.ServiceBus;
+﻿using Azure.Messaging.ServiceBus;
 using CommonServiceBusConnectionString;
 using Spectre.Console;
+using System.Reflection;
+using System.Text;
 
-await using var client = new ServiceBusClient(Settings.GetConnectionString());
+await using var client = new ServiceBusClient(Settings.GetConnectionString(Assembly.GetExecutingAssembly()));
 const string queueName = "errorhandling";
 var sender = client.CreateSender(queueName);
 

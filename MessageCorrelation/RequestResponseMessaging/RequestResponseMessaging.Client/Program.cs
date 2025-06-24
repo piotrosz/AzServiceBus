@@ -1,10 +1,11 @@
-﻿using System.Text;
-using System.Diagnostics;
-using Azure.Messaging.ServiceBus;
+﻿using Azure.Messaging.ServiceBus;
 using CommonServiceBusConnectionString;
 using Spectre.Console;
+using System.Diagnostics;
+using System.Reflection;
+using System.Text;
 
-var connectionString = Settings.GetConnectionString();
+var connectionString = Settings.GetConnectionString(Assembly.GetExecutingAssembly());
 const string requestQueueName = "requestQueue";
 const string responseQueueName = "responseQueue";
 

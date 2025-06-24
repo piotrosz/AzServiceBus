@@ -1,8 +1,9 @@
-﻿using System.Text;
-using Azure.Messaging.ServiceBus;
+﻿using Azure.Messaging.ServiceBus;
 using CommonServiceBusConnectionString;
+using System.Reflection;
+using System.Text;
 
-var serviceBusConnectionString = Settings.GetConnectionString();
+var serviceBusConnectionString = Settings.GetConnectionString(Assembly.GetExecutingAssembly());
 const string queueName = "demoqueue";
 
 var serviceBusClient = new ServiceBusClient(serviceBusConnectionString);

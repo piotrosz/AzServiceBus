@@ -3,7 +3,7 @@ using AzServiceBusAdministration;
 using CommonServiceBusConnectionString;
 using Spectre.Console;
 
-// Minimum "Stardard" tier to create topics
+// Minimum "Standard" tier to create topics
 
 var serviceBusConnectionString = Settings.GetConnectionString(Assembly.GetExecutingAssembly());
 var managementHelper = new ManagementHelper(serviceBusConnectionString);
@@ -18,80 +18,84 @@ do
 
     try
     {
-        if (commands.Length > 0)
+        var command = commands.Length > 0 ? commands[0].ToLowerInvariant() : string.Empty;
+
+        switch (command)
         {
-            switch (commands[0])
-            {
-                case Commands.CreateQueue:
-                case Commands.CreateQueueShort:
-                    if (commands.Length > 1)
-                    {
-                        await managementHelper.CreateQueueAsync(commands[1]);
-                    }
-                    else
-                    {
-                        AnsiConsole.MarkupLine("[yellow]Queue path not specified.[/]");
-                    }
-                    break;
-                case Commands.ListQueues:
-                case Commands.ListQueuesShort:
-                    await managementHelper.ListQueuesAsync();
-                    break;
-                case Commands.GetQueue:
-                case Commands.GetQueueShort:
-                    if (commands.Length > 1)
-                    {
-                        await managementHelper.GetQueueAsync(commands[1]);
-                    }
-                    else
-                    {
-                        AnsiConsole.MarkupLine("[yellow]Queue path not specified.[/]");
-                    }
-                    break;
-                case Commands.DeleteQueue:
-                case Commands.DeleteQueueShort:
-                    if (commands.Length > 1)
-                    {
-                        await managementHelper.DeleteQueueAsync(commands[1]);
-                    }
-                    else
-                    {
-                        AnsiConsole.MarkupLine("[yellow]Queue path not specified.[/]");
-                    }
-                    break;
-                case Commands.CreateTopic:
-                case Commands.CreateTopicShort:
-                    if (commands.Length > 1)
-                    {
-                        await managementHelper.CreateTopicAsync(commands[1]);
-                    }
-                    else
-                    {
-                        AnsiConsole.MarkupLine("[yellow]Topic path not specified.[/]");
-                    }
-                    break;
-                case Commands.CreateSubscription:
-                case Commands.CreateSubscriptionShort:
-                    if (commands.Length > 2)
-                    {
-                        await managementHelper.CreateSubscriptionAsync(commands[1], commands[2]);
-                    }
-                    else
-                    {
-                        AnsiConsole.MarkupLine("[yellow]Topic path not specified.[/]");
-                    }
-                    break;
-                case Commands.ListTopics:
-                case Commands.ListTopicsShort:
-                    await managementHelper.ListTopicsAndSubscriptionsAsync();
-                    break;
-                case Commands.Help:
-                    DisplayHelp();
-                    break;
-                case Commands.Exit:
-                    done = true;
-                    break;
-            }
+            case Commands.CreateQueue:
+            case Commands.CreateQueueShort:
+                if (commands.Length > 1)
+                {
+                    await managementHelper.CreateQueueAsync(commands[1]);
+                }
+                else
+                {
+                    AnsiConsole.MarkupLine("[yellow]Queue path not specified.[/]");
+                }
+
+                break;
+            case Commands.ListQueues:
+            case Commands.ListQueuesShort:
+                await managementHelper.ListQueuesAsync();
+                break;
+            case Commands.GetQueue:
+            case Commands.GetQueueShort:
+                if (commands.Length > 1)
+                {
+                    await managementHelper.GetQueueAsync(commands[1]);
+                }
+                else
+                {
+                    AnsiConsole.MarkupLine("[yellow]Queue path not specified.[/]");
+                }
+
+                break;
+            case Commands.DeleteQueue:
+            case Commands.DeleteQueueShort:
+                if (commands.Length > 1)
+                {
+                    await managementHelper.DeleteQueueAsync(commands[1]);
+                }
+                else
+                {
+                    AnsiConsole.MarkupLine("[yellow]Queue path not specified.[/]");
+                }
+
+                break;
+            case Commands.CreateTopic:
+            case Commands.CreateTopicShort:
+                if (commands.Length > 1)
+                {
+                    await managementHelper.CreateTopicAsync(commands[1]);
+                }
+                else
+                {
+                    AnsiConsole.MarkupLine("[yellow]Topic path not specified.[/]");
+                }
+
+                break;
+            case Commands.CreateSubscription:
+            case Commands.CreateSubscriptionShort:
+                if (commands.Length > 2)
+                {
+                    await managementHelper.CreateSubscriptionAsync(commands[1], commands[2]);
+                }
+                else
+                {
+                    AnsiConsole.MarkupLine("[yellow]Topic path not specified.[/]");
+                }
+
+                break;
+            case Commands.ListTopics:
+            case Commands.ListTopicsShort:
+                await managementHelper.ListTopicsAndSubscriptionsAsync();
+                break;
+            case Commands.Help:
+                DisplayHelp();
+                break;
+            case Commands.Exit:
+                done = true;
+                break;
         }
     }
     catch (Exception ex)
@@ -100,8 +104,11 @@ do
     }
 } while (!done);
 
+return;
+
 static void DisplayHelp()
-{    var panel = new Panel(BuildHelpContent())
+{    
+    var panel = new Panel(BuildHelpContent())
     {
         Border = BoxBorder.Rounded,
         Header = new PanelHeader("[green]Available Commands[/]"),

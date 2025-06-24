@@ -1,13 +1,14 @@
-﻿using System.Text;
-using Azure.Messaging.ServiceBus;
+﻿using Azure.Messaging.ServiceBus;
 using CommonServiceBusConnectionString;
 using Newtonsoft.Json;
 using RfidCheckout.Messages;
+using System.Reflection;
+using System.Text;
 using static System.Console;
 
 WriteLine("Tag Reader Console (sends messages)");
 
-var connectionString = Settings.GetConnectionString();
+var connectionString = Settings.GetConnectionString(Assembly.GetExecutingAssembly());
 const string queueName = "rfidcheckout";
 
 var client = new ServiceBusClient(connectionString);
@@ -15,16 +16,14 @@ var sender = client.CreateSender(queueName);
 
 var orderItems = new RfidTag[]
 {
-        new() { Product = "Ball", Price = 4.99 },
-        new() { Product = "Whistle", Price = 1.95 },
-        new() { Product = "Bat", Price = 12.99 },
-        new() { Product = "Bat", Price = 12.99 },
-        new() { Product = "Gloves", Price = 7.99 },
-        new() { Product = "Gloves", Price = 7.99 },
-        new() { Product = "Cap", Price = 9.99 },
-        new() { Product = "Cap", Price = 9.99 },
-        new() { Product = "Shirt", Price = 14.99 },
-        new() { Product = "Shirt", Price = 14.99 },
+        new("Ball", 4.99),
+        new("Whistle", 1.95),
+        new("Bat", 12.99),
+        new("Bat", 12.99),
+        new("Gloves", 7.99),
+        new("Cap", 9.99),
+        new("Shirt", 14.99),
+        new("Shirt",  14.99),
 };
 
 // Display the order data.
@@ -32,8 +31,8 @@ ForegroundColor = ConsoleColor.Green;
 WriteLine("Order contains {0} items.", orderItems.Length);
 ForegroundColor = ConsoleColor.Yellow;
 
-double orderTotal = 0.0;
-foreach (RfidTag tag in orderItems)
+var orderTotal = 0.0;
+foreach (var tag in orderItems)
 {
     WriteLine("{0} - ${1}", tag.Product, tag.Price);
     orderTotal += tag.Price;
@@ -49,8 +48,8 @@ ReadLine();
 var random = new Random(DateTime.Now.Millisecond);
 
 // Send the order with random duplicate tag reads
-int sentCount = 0;
-int position = 0;
+var sentCount = 0;
+var position = 0;
 
 WriteLine("Reading tags...");
 WriteLine();
@@ -62,7 +61,7 @@ ForegroundColor = ConsoleColor.Cyan;
 
 while (position < 10)
 {
-    RfidTag rfidTag = orderItems[position];
+    var rfidTag = orderItems[position];
 
     // Create a new  message from the order item RFID tag.
     var orderJson = JsonConvert.SerializeObject(rfidTag);

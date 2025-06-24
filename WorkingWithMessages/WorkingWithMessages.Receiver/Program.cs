@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Reflection;
+using System.Text;
 using WorkingWithMessages.MessageEntities;
 using Azure.Messaging.ServiceBus;
 using Azure.Messaging.ServiceBus.Administration;
@@ -6,7 +7,7 @@ using CommonServiceBusConnectionString;
 using Newtonsoft.Json;
 using Spectre.Console;
 
-await using var queueClient = new ServiceBusClient(Settings.GetConnectionString());
+await using var queueClient = new ServiceBusClient(Settings.GetConnectionString(Assembly.GetExecutingAssembly()));
 const string queueName = "workingwithmessages";
 
 AnsiConsole.MarkupLine("[bold white]Receiver Console[/]");

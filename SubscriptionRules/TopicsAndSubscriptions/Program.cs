@@ -1,8 +1,9 @@
 ﻿using CommonServiceBusConnectionString;
 using Spectre.Console;
+using System.Reflection;
 using TopicsAndSubscriptions;
 
-var serviceBusConnectionString = Settings.GetConnectionString();
+var serviceBusConnectionString = Settings.GetConnectionString(Assembly.GetExecutingAssembly());
 const string topicName = "Orders";
 
 AnsiConsole.MarkupLine("[blue]Topics and Subscriptions Console[/]");

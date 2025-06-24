@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.Reflection;
 using System.Text;
 using Azure.Messaging.ServiceBus;
 using CommonServiceBusConnectionString;
@@ -37,7 +38,7 @@ static async Task SendTextString(string text)
 {
     AnsiConsole.MarkupLine("[cyan]SendTextStringAsMessagesAsync[/]");
 
-    await using var client = new ServiceBusClient(Settings.GetConnectionString());
+    await using var client = new ServiceBusClient(Settings.GetConnectionString(Assembly.GetExecutingAssembly()));
     var sender = client.CreateSender(queueName);
 
     AnsiConsole.Markup("[lime]Sending...[/]");
@@ -57,7 +58,7 @@ static async Task SendTextStringAsMessagesAsync(string text)
     AnsiConsole.MarkupLine("[cyan]SendTextStringAsMessagesAsync[/]");
 
     // Create a client
-    await using var client = new ServiceBusClient(Settings.GetConnectionString());
+    await using var client = new ServiceBusClient(Settings.GetConnectionString(Assembly.GetExecutingAssembly()));
     var sender = client.CreateSender(queueName);
 
     AnsiConsole.Markup("[lime]Sending:[/]");
@@ -82,7 +83,7 @@ static async Task SendTextStringAsBatchAsync(string text)
 {
     AnsiConsole.MarkupLine("[cyan]SendTextStringAsBatchAsync[/]");
 
-    await using var client = new ServiceBusClient(Settings.GetConnectionString());
+    await using var client = new ServiceBusClient(Settings.GetConnectionString(Assembly.GetExecutingAssembly()));
     var sender = client.CreateSender(queueName);
 
     AnsiConsole.Markup("[lime]Sending:[/]");
@@ -147,7 +148,7 @@ static async Task SendPizzaOrderAsync()
         ContentType = "application/json"
     };
 
-    await using var client = new ServiceBusClient(Settings.GetConnectionString());
+    await using var client = new ServiceBusClient(Settings.GetConnectionString(Assembly.GetExecutingAssembly()));
     var sender = client.CreateSender(queueName);
     AnsiConsole.Markup("[lime]Sending order...[/]");
     await sender.SendMessageAsync(message);
