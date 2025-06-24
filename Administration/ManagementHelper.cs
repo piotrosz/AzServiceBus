@@ -8,7 +8,7 @@ namespace AzServiceBusAdministration;
 internal sealed class ManagementHelper(string connectionString)
 {
     private readonly ServiceBusAdministrationClient _managementClient = new(connectionString, 
-        new ServiceBusAdministrationClientOptions()
+        new ServiceBusAdministrationClientOptions
         {
             Retry = { MaxRetries = 2}
         });
@@ -18,13 +18,14 @@ internal sealed class ManagementHelper(string connectionString)
         Console.Write("Creating queue: {0}...", queuePath);
         var createQueueOptions = GetCreateQueueOptions(queuePath);
         var queueProps = await _managementClient.CreateQueueAsync(createQueueOptions);
+        
         Console.WriteLine("Done!");
         DumpQueueProperties(queueProps);
     }
 
     public async Task DeleteQueueAsync(string queuePath)
     {
-        Console.Write("Deleting queue: {0}...", queuePath);
+        Console.WriteLine("Deleting queue: {0}...", queuePath);
         await _managementClient.DeleteQueueAsync(queuePath);
         AnsiConsole.MarkupLine(":cloud: Done!");
     }
@@ -35,9 +36,8 @@ internal sealed class ManagementHelper(string connectionString)
         Console.WriteLine("Listing queues...");
         await foreach (QueueProperties properties in queueDescriptions)
         {
-            Console.WriteLine("\t{0}", properties.Name);
+            Console.WriteLine("- {0}", properties.Name);
         }
-        Console.WriteLine("Done!");
     }
 
     public async Task GetQueueAsync(string queuePath)
@@ -55,8 +55,8 @@ internal sealed class ManagementHelper(string connectionString)
         grid.AddColumn();
         grid.AddColumn();
         
-        grid.AddRow("Name:", value.Name);
-        grid.AddRow("MaxSizeInMegabytes:", value.MaxSizeInMegabytes.ToString());
+        grid.AddRow("Name", value.Name);
+        grid.AddRow("MaxSizeInMegabytes", value.MaxSizeInMegabytes.ToString());
         grid.AddRow("RequiresSession", value.RequiresSession.ToString());
         grid.AddRow("RequiresDuplicateDetection", value.RequiresDuplicateDetection.ToString());
         grid.AddRow("DuplicateDetectionHistoryTimeWindow", value.DuplicateDetectionHistoryTimeWindow.ToString());
@@ -100,8 +100,7 @@ internal sealed class ManagementHelper(string connectionString)
         Console.WriteLine("Done!");
     }
 
-    private CreateQueueOptions GetCreateQueueOptions(string path) =>
-        new(path)
+    private CreateQueueOptions GetCreateQueueOptions(string path) => new(path)
         {
             RequiresDuplicateDetection = true,
             //DuplicateDetectionHistoryTimeWindow = TimeSpan.FromMinutes(10),
