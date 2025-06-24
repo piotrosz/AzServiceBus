@@ -16,3 +16,13 @@ Operations on queues, topics and subscriptions (create, list, delete).
 
 ### Working with messages
 
+### Message correlation
+
+Sends duplicate messages randomly.
+
+### Subsription rules
+
+Subscriptions with different SQL filters.
+
+### Error handling
+

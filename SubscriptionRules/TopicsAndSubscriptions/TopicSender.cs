@@ -14,7 +14,9 @@ sealed class TopicSender
     {
         _client = new ServiceBusClient(connectionString);
         _sender = _client.CreateSender(topicName);
-    }    public async Task SendOrderMessage(Order order)
+    }
+
+    public async Task SendOrderMessage(Order order)
     {
         AnsiConsole.MarkupLine($"[yellow]{order}[/]");
 
@@ -22,9 +24,9 @@ sealed class TopicSender
 
         var message = new ServiceBusMessage(Encoding.UTF8.GetBytes(orderJson));
 
-        message.ApplicationProperties.Add("region", order.Region);           
+        message.ApplicationProperties.Add("region", order.Region);
         message.ApplicationProperties.Add("items", order.Items);
-        message.ApplicationProperties.Add("value", order.Value);            
+        message.ApplicationProperties.Add("value", order.Value);
         message.ApplicationProperties.Add("loyalty", order.HasLoyaltyCard);
 
         message.CorrelationId = order.Region;

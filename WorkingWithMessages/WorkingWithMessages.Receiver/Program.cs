@@ -7,7 +7,8 @@ using CommonServiceBusConnectionString;
 using Newtonsoft.Json;
 using Spectre.Console;
 
-await using var queueClient = new ServiceBusClient(Settings.GetConnectionString(Assembly.GetExecutingAssembly()));
+string connectionString = Settings.GetConnectionString(Assembly.GetExecutingAssembly());
+await using var queueClient = new ServiceBusClient(connectionString);
 const string queueName = "workingwithmessages";
 
 AnsiConsole.MarkupLine("[bold white]Receiver Console[/]");
@@ -107,7 +108,7 @@ async Task ProcessPizzaMessageAsync(ProcessMessageEventArgs message)
 
     if (pizzaOrder != null)
     {
-        CookPizza(pizzaOrder);
+        await CookPizza(pizzaOrder);
     }
     else
     {
@@ -156,7 +157,7 @@ async Task ReceiveAndProcessCharacters(int threads)
         MaxAutoLockRenewalDuration = TimeSpan.FromSeconds(30)
     };
 
-    var processor= queueClient.CreateProcessor(queueName, options);
+    var processor = queueClient.CreateProcessor(queueName, options);
 
     processor.ProcessMessageAsync += ProcessCharacterMessageAsync;
     processor.ProcessErrorAsync += ProcessErrorHandler;
@@ -174,9 +175,9 @@ async Task ProcessCharacterMessageAsync(ProcessMessageEventArgs message)
     await message.CompleteMessageAsync(message.Message);
 }
 
-static async Task RecreateQueueAsync()
+async Task RecreateQueueAsync()
 {
-    var manager = new ServiceBusAdministrationClient(Settings.GetConnectionString(Assembly.GetExecutingAssembly()));
+    var manager = new ServiceBusAdministrationClient(connectionString);
     if (await manager.QueueExistsAsync(queueName))
     {
         AnsiConsole.MarkupLine($"[magenta]Deleting queue: {queueName.EscapeMarkup()}...[/]");
@@ -189,10 +190,10 @@ static async Task RecreateQueueAsync()
     AnsiConsole.MarkupLine("[magenta]Done![/]");
 }
 
-static void CookPizza(PizzaOrder order)
+static async Task CookPizza(PizzaOrder order)
 {
     AnsiConsole.MarkupLine($"[yellow]Cooking {order.Type.EscapeMarkup()} for {order.CustomerName.EscapeMarkup()}.[/]");
-    Thread.Sleep(5000);
-    AnsiConsole.MarkupLine($"[green]    {order.Type.EscapeMarkup()} pizza for {order.CustomerName.EscapeMarkup()} is ready![/]");
+    await Task.Delay(5000);
+    AnsiConsole.MarkupLine($"[green]{order.Type.EscapeMarkup()} pizza for {order.CustomerName.EscapeMarkup()} is ready![/]");
 }
 

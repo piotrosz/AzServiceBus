@@ -6,6 +6,7 @@ using RfidCheckout.Messages;
 using System.Reflection;
 using System.Text;
 using static System.Console;
+using Spectre.Console;
 
 int ReceivedCount = 0;
 double BillTotal = 0.0;
@@ -54,10 +55,7 @@ if (!UseMessageSessions)
     await processor.StopProcessingAsync();
     await processor.CloseAsync();
 
-    // Bill the customer.
-    ForegroundColor = ConsoleColor.Green;
-    WriteLine("Bill customer ${0} for {1} items.", BillTotal, ReceivedCount);
-
+    AnsiConsole.MarkupInterpolated($"[green]Bill customer ${BillTotal} for {ReceivedCount} items.[/]");
     ReadLine();
 }
 else
@@ -98,7 +96,7 @@ async Task ProcessSessionMessageHandler(ProcessSessionMessageEventArgs  message)
     ForegroundColor = ConsoleColor.White;
 
     ForegroundColor = ConsoleColor.Cyan;
-    WriteLine($"Accepted session: { message.Message.SessionId }");
+    WriteLine($"Accepted session: {message.Message.SessionId}");
     ForegroundColor = ConsoleColor.Yellow;
 
     int receivedCount = 0;
@@ -114,9 +112,7 @@ async Task ProcessSessionMessageHandler(ProcessSessionMessageEventArgs  message)
 
     await message.CompleteMessageAsync(message.Message);
 
-    // Bill the customer.
-    ForegroundColor = ConsoleColor.Green;
-    WriteLine("Bill customer ${0} for {1} items.", billTotal, receivedCount);                   
+    AnsiConsole.MarkupInterpolated($"[green]Bill customer ${billTotal} for {receivedCount} items.[/]");
 
 }
 

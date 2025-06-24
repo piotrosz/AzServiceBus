@@ -14,24 +14,31 @@ internal sealed class SubscriptionsManager(string connectionString)
         }
 
         return await _administrationClient.CreateTopicAsync(topicName);
-    }    public async Task<SubscriptionProperties> CreateSubscription(string topicName, string subscriptionName)
+    }
+
+    public async Task<SubscriptionProperties> CreateSubscription(string topicName, string subscriptionName)
     {
-        AnsiConsole.MarkupLine($"[blue]Creating Subscription[/] [green]{ topicName }[/]/[yellow]{ subscriptionName }[/]");
+        AnsiConsole.MarkupLine($"[blue]Creating Subscription[/] [green]{topicName}[/]/[yellow]{subscriptionName}[/]");
         return await _administrationClient.CreateSubscriptionAsync(topicName, subscriptionName);
-    }    public async Task<SubscriptionProperties> CreateSubscriptionWithSqlFilter(string topicName, string subscriptionName, string sqlExpression)
+    }
+
+    public async Task<SubscriptionProperties> CreateSubscriptionWithSqlFilter(string topicName, string subscriptionName, string sqlExpression)
     {
-        AnsiConsole.MarkupLine($"[blue]Creating Subscription with SQL Filter[/] [green]{ topicName }[/]/[yellow]{ subscriptionName }[/] ([magenta]{ sqlExpression }[/])");
+        AnsiConsole.MarkupLine($"[blue]Creating Subscription with SQL Filter[/] [green]{topicName}[/]/[yellow]{subscriptionName}[/] ([magenta]{sqlExpression}[/])");
         var createSubscriptionOptions = new CreateSubscriptionOptions(topicName, subscriptionName);
         var ruleDescription = new CreateRuleOptions("Default", new SqlRuleFilter(sqlExpression));
         return await _administrationClient.CreateSubscriptionAsync(createSubscriptionOptions, ruleDescription);
-    }    public async Task<SubscriptionProperties> CreateSubscriptionWithCorrelationFilter(string topicName, string subscriptionName, string correlationId)
+    }
+
+    public async Task<SubscriptionProperties> CreateSubscriptionWithCorrelationFilter(string topicName, string subscriptionName, string correlationId)
     {
-        AnsiConsole.MarkupLine($"[blue]Creating Subscription with Correlation Filter[/] [green]{ topicName }[/]/[yellow]{ subscriptionName }[/] ([magenta]{ correlationId }[/])");
+        AnsiConsole.MarkupLine($"[blue]Creating Subscription with Correlation Filter[/] [green]{topicName}[/]/[yellow]{subscriptionName}[/] ([magenta]{correlationId}[/])");
         var createSubscriptionOptions = new CreateSubscriptionOptions(topicName, subscriptionName);
         var ruleDescription = new CreateRuleOptions("Default", new CorrelationRuleFilter(correlationId));
 
         return await _administrationClient.CreateSubscriptionAsync(createSubscriptionOptions, ruleDescription);
     }
+    
     public AsyncPageable<SubscriptionProperties> GetSubscriptionsForTopic(string topicName)
     {
         return _administrationClient.GetSubscriptionsAsync(topicName);

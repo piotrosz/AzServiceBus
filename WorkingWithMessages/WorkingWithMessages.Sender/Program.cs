@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System.Data.Common;
+using System.Diagnostics;
 using System.Reflection;
 using System.Text;
 using Azure.Messaging.ServiceBus;
@@ -8,6 +9,8 @@ using Spectre.Console;
 using WorkingWithMessages.MessageEntities;
 
 const string queueName = "workingwithmessages";
+
+string connectionString = Settings.GetConnectionString(Assembly.GetExecutingAssembly());
 
 AnsiConsole.MarkupLine("[white]Sender Console - Hit enter[/]");
 AnsiConsole.Prompt(new TextPrompt<string>("").AllowEmpty());
@@ -34,11 +37,11 @@ AnsiConsole.Prompt(new TextPrompt<string>("").AllowEmpty());
 
 return;
 
-static async Task SendTextString(string text)
+async Task SendTextString(string text)
 {
     AnsiConsole.MarkupLine("[cyan]SendTextStringAsMessagesAsync[/]");
 
-    await using var client = new ServiceBusClient(Settings.GetConnectionString(Assembly.GetExecutingAssembly()));
+    await using var client = new ServiceBusClient(connectionString);
     var sender = client.CreateSender(queueName);
 
     AnsiConsole.Markup("[lime]Sending...[/]");
@@ -53,12 +56,12 @@ static async Task SendTextString(string text)
 }
 
 
-static async Task SendTextStringAsMessagesAsync(string text)
+async Task SendTextStringAsMessagesAsync(string text)
 {
     AnsiConsole.MarkupLine("[cyan]SendTextStringAsMessagesAsync[/]");
 
     // Create a client
-    await using var client = new ServiceBusClient(Settings.GetConnectionString(Assembly.GetExecutingAssembly()));
+    await using var client = new ServiceBusClient(connectionString);
     var sender = client.CreateSender(queueName);
 
     AnsiConsole.Markup("[lime]Sending:[/]");
@@ -79,11 +82,11 @@ static async Task SendTextStringAsMessagesAsync(string text)
     await sender.CloseAsync();
 }
 
-static async Task SendTextStringAsBatchAsync(string text)
+async Task SendTextStringAsBatchAsync(string text)
 {
     AnsiConsole.MarkupLine("[cyan]SendTextStringAsBatchAsync[/]");
 
-    await using var client = new ServiceBusClient(Settings.GetConnectionString(Assembly.GetExecutingAssembly()));
+    await using var client = new ServiceBusClient(connectionString);
     var sender = client.CreateSender(queueName);
 
     AnsiConsole.Markup("[lime]Sending:[/]");
@@ -107,7 +110,7 @@ static async Task SendTextStringAsBatchAsync(string text)
     await sender.CloseAsync();
 }
 
-static async Task SendControlMessageAsync()
+async Task SendControlMessageAsync()
 {
     AnsiConsole.MarkupLine("[cyan]SendControlMessageAsync[/]");
 
@@ -120,8 +123,8 @@ static async Task SendControlMessageAsync()
     message.ApplicationProperties.Add("Command", "Pending Restart");
     message.ApplicationProperties.Add("ActionTime", DateTime.UtcNow.AddHours(2));
 
-    await using var client = new ServiceBusClient(Settings.GetConnectionString(Assembly.GetExecutingAssembly()));
-    var sender = client.CreateSender(queueName);   
+    await using var client = new ServiceBusClient(connectionString);
+    var sender = client.CreateSender(queueName);
     AnsiConsole.Markup("[lime]Sending control message...[/]");
     await sender.SendMessageAsync(message);
     AnsiConsole.MarkupLine("[lime]Done![/]");
@@ -129,7 +132,7 @@ static async Task SendControlMessageAsync()
     await sender.CloseAsync();
 }
 
-static async Task SendPizzaOrderAsync()
+async Task SendPizzaOrderAsync()
 {
     AnsiConsole.MarkupLine("[cyan]SendPizzaOrderAsync[/]");
 
@@ -148,7 +151,7 @@ static async Task SendPizzaOrderAsync()
         ContentType = "application/json"
     };
 
-    await using var client = new ServiceBusClient(Settings.GetConnectionString(Assembly.GetExecutingAssembly()));
+    await using var client = new ServiceBusClient(connectionString);
     var sender = client.CreateSender(queueName);
     AnsiConsole.Markup("[lime]Sending order...[/]");
     await sender.SendMessageAsync(message);
@@ -157,12 +160,12 @@ static async Task SendPizzaOrderAsync()
     await sender.CloseAsync();
 }
 
-static async Task SendPizzaOrderListAsMessagesAsync()
+async Task SendPizzaOrderListAsMessagesAsync()
 {
     AnsiConsole.MarkupLine("[cyan]SendPizzaOrderListAsMessagesAsync[/]");
 
     var pizzaOrderList = GetPizzaOrderList();
-    await using var client = new ServiceBusClient(Settings.GetConnectionString(Assembly.GetExecutingAssembly()));
+    await using var client = new ServiceBusClient(connectionString);
     var sender = client.CreateSender(queueName);
 
     AnsiConsole.MarkupLine("[yellow]Sending...[/]");
@@ -186,12 +189,12 @@ static async Task SendPizzaOrderListAsMessagesAsync()
     AnsiConsole.WriteLine();
 }
 
-static async Task SendPizzaOrderListAsBatchAsync()
+async Task SendPizzaOrderListAsBatchAsync()
 {
     AnsiConsole.MarkupLine("[cyan]SendPizzaOrderListAsBatchAsync[/]");
 
     var pizzaOrderList = GetPizzaOrderList();
-    await using var client = new ServiceBusClient(Settings.GetConnectionString(Assembly.GetExecutingAssembly()));
+    await using var client = new ServiceBusClient(connectionString);
     var sender = client.CreateSender(queueName);
 
     var watch = Stopwatch.StartNew();
