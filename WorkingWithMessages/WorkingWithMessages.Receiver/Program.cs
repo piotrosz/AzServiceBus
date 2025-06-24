@@ -176,7 +176,7 @@ async Task ProcessCharacterMessageAsync(ProcessMessageEventArgs message)
 
 static async Task RecreateQueueAsync()
 {
-    var manager = new ServiceBusAdministrationClient(Settings.GetConnectionString());
+    var manager = new ServiceBusAdministrationClient(Settings.GetConnectionString(Assembly.GetExecutingAssembly()));
     if (await manager.QueueExistsAsync(queueName))
     {
         AnsiConsole.MarkupLine($"[magenta]Deleting queue: {queueName.EscapeMarkup()}...[/]");

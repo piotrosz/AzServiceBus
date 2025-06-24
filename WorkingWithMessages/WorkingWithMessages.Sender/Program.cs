@@ -120,7 +120,7 @@ static async Task SendControlMessageAsync()
     message.ApplicationProperties.Add("Command", "Pending Restart");
     message.ApplicationProperties.Add("ActionTime", DateTime.UtcNow.AddHours(2));
 
-    await using var client = new ServiceBusClient(Settings.GetConnectionString());
+    await using var client = new ServiceBusClient(Settings.GetConnectionString(Assembly.GetExecutingAssembly()));
     var sender = client.CreateSender(queueName);   
     AnsiConsole.Markup("[lime]Sending control message...[/]");
     await sender.SendMessageAsync(message);
@@ -162,7 +162,7 @@ static async Task SendPizzaOrderListAsMessagesAsync()
     AnsiConsole.MarkupLine("[cyan]SendPizzaOrderListAsMessagesAsync[/]");
 
     var pizzaOrderList = GetPizzaOrderList();
-    await using var client = new ServiceBusClient(Settings.GetConnectionString());
+    await using var client = new ServiceBusClient(Settings.GetConnectionString(Assembly.GetExecutingAssembly()));
     var sender = client.CreateSender(queueName);
 
     AnsiConsole.MarkupLine("[yellow]Sending...[/]");
@@ -191,7 +191,7 @@ static async Task SendPizzaOrderListAsBatchAsync()
     AnsiConsole.MarkupLine("[cyan]SendPizzaOrderListAsBatchAsync[/]");
 
     var pizzaOrderList = GetPizzaOrderList();
-    await using var client = new ServiceBusClient(Settings.GetConnectionString());
+    await using var client = new ServiceBusClient(Settings.GetConnectionString(Assembly.GetExecutingAssembly()));
     var sender = client.CreateSender(queueName);
 
     var watch = Stopwatch.StartNew();
