@@ -8,7 +8,7 @@ namespace TopicsAndSubscriptions;
 sealed class TopicSender
 {
     private readonly ServiceBusClient _client;
-    private ServiceBusSender _sender;
+    private readonly ServiceBusSender _sender;
 
     public TopicSender(string connectionString, string topicName)
     {

@@ -30,21 +30,21 @@ AnsiConsole.MarkupLine($"[green]Receiving on[/] [bold green]{ subscriptionName }
 AnsiConsole.MarkupLine("[yellow]Press enter to quit...[/]");
 
 // Set up cancellation token source for graceful exit
-using var cts = new CancellationTokenSource();
-var cancellationToken = cts.Token;
+using var cancellationTokenSource = new CancellationTokenSource();
+var cancellationToken = cancellationTokenSource.Token;
 
 // Start a task to listen for console input to exit
 var exitTask = Task.Run(() => 
 {
     ReadLine();
-    cts.Cancel();
+    cancellationTokenSource.Cancel();
 });
 
 try
 {
     while (!cancellationToken.IsCancellationRequested)
     { 
-        var message = await receiver.ReceiveMessageAsync(TimeSpan.FromSeconds(1), cancellationToken);
+        var message = await receiver.ReceiveMessageAsync(maxWaitTime:TimeSpan.FromSeconds(1), cancellationToken);
         if (message != null)
         {
             InspectMessage(message);
@@ -62,9 +62,11 @@ finally
     AnsiConsole.MarkupLine("[bold green]Wire Tap closed.[/]");
 }
 
+return;
+
 void InspectMessage(ServiceBusReceivedMessage message)
 {
-    AnsiConsole.MarkupLine($"[bold green]Received message...[/]");
+    AnsiConsole.MarkupLine("[bold green]Received message...[/]");
     
     // Create a table for message properties
     var propertiesTable = new Table().Border(TableBorder.Rounded);

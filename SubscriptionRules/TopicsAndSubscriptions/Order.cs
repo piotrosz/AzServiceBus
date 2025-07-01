@@ -1,23 +1,18 @@
 ﻿namespace TopicsAndSubscriptions;
 
-record Order
+internal record Order
 {
-    public string Name { get; set; }
+    public string Name { get; init; }
 
     public DateTime OrderDate { get; set; }
 
-    public int Items { get; set; }
+    public int Items { get; init; }
 
-    public double Value { get; set; }
+    public double Value { get; init; }
 
-    public string Priority { get; set; }
+    public string Priority { get; init; }
 
-    public string Region { get; set; }
+    public string Region { get; init; }
 
-    public bool HasLoyaltyCard { get; set; }
-
-    public override string ToString()
-    {
-        return $"{Name}\tItm:{Items}\t${Value}\t{Region}\tLoyal:{HasLoyaltyCard}";
-    }
+    public bool HasLoyaltyCard { get; init; }
 }

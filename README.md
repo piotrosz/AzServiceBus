@@ -20,7 +20,7 @@ Operations on queues, topics and subscriptions (create, list, delete).
 
 Sends duplicate messages randomly.
 
-### Subsription rules
+### Subscription rules
 
 Subscriptions with different SQL filters.
 

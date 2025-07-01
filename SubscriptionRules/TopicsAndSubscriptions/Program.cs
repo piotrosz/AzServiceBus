@@ -19,6 +19,8 @@ await ReceiveOrdersFromAllSubscriptions();
 
 PromptAndWait("Topics and Subscriptions Console Complete");
 
+return;
+
 async Task CreateTopicsAndSubscriptions()
 {
     var manager = new SubscriptionsManager(serviceBusConnectionString);
@@ -39,7 +41,7 @@ async Task CreateTopicsAndSubscriptions()
 
 async Task SendOrderMessages()
 {
-    var orders = CreateTestOrders();
+    var orders = TestOrders.CreateTestOrders();
 
     var sender = new TopicSender(serviceBusConnectionString, topicName);
 
@@ -63,57 +65,6 @@ async Task ReceiveOrdersFromAllSubscriptions()
         PromptAndWait($"Receiving orders from { subscriptionProperties.SubscriptionName }, press enter when complete..");
         await receiver.Close();
     }
-}
-
-static List<Order> CreateTestOrders()
-{
-    return
-    [
-        new()
-        {
-            Name = "Loyal Customer",
-            Value = 19.99,
-            Region = "USA",
-            Items = 1,
-            HasLoyaltyCard = true
-        },
-
-        new()
-        {
-            Name = "Large Order",
-            Value = 49.99,
-            Region = "USA",
-            Items = 50,
-            HasLoyaltyCard = false
-        },
-
-        new()
-        {
-            Name = "High Value",
-            Value = 749.45,
-            Region = "USA",
-            Items = 45,
-            HasLoyaltyCard = false
-        },
-
-        new()
-        {
-            Name = "Loyal Europe",
-            Value = 49.45,
-            Region = "EU",
-            Items = 3,
-            HasLoyaltyCard = true
-        },
-
-        new()
-        {
-            Name = "UK Order",
-            Value = 49.45,
-            Region = "UK",
-            Items = 3,
-            HasLoyaltyCard = false
-        }
-    ];
 }
 
 static void PromptAndWait(string text)
