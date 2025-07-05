@@ -58,7 +58,7 @@ async Task ReceiveAndProcessText(int threads)
 
 async Task ReceiveAndProcessControlMessage(int threads)
 {
-    AnsiConsole.MarkupLine($"[cyan]ReceiveAndProcessPizzaOrders({ threads })[/]");
+    AnsiConsole.MarkupLine($"[cyan]ReceiveAndProcessPizzaOrders({threads})[/]");
     
     var options = new ServiceBusProcessorOptions
     {
@@ -134,7 +134,7 @@ async Task ProcessControlMessageAsync(ProcessMessageEventArgs message)
     AnsiConsole.MarkupLine("[yellow]User properties...[/]");
     foreach (var property in message.Message.ApplicationProperties)
     {
-        AnsiConsole.MarkupLine($"[cyan]    {property.Key.EscapeMarkup()} - {property.Value}[/]");
+        AnsiConsole.MarkupLine($"[cyan]{property.Key.EscapeMarkup()} - {property.Value}[/]");
     }
 
     await message.CompleteMessageAsync(message.Message);

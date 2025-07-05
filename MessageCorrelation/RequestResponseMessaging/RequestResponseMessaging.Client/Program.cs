@@ -37,7 +37,8 @@ while (true)
 
     // Receive the response message.
     var responseMessage = await messageSession.ReceiveMessageAsync();
-    stopwatch.Stop();    var echoText = Encoding.UTF8.GetString(responseMessage.Body);
+    stopwatch.Stop();    
+    var echoText = Encoding.UTF8.GetString(responseMessage.Body);
 
     AnsiConsole.MarkupLine($"[yellow]{echoText.EscapeMarkup()}[/]");
     AnsiConsole.MarkupLine($"[white]Time: {stopwatch.ElapsedMilliseconds} ms.[/]");
