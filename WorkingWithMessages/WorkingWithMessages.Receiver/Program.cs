@@ -17,7 +17,7 @@ await RecreateQueueAsync();
 
 //Comment in the appropriate method
 
-await ReceiveAndProcessText(1);
+await ReceiveAndProcessText(2);
 
 //await ReceiveAndProcessPizzaOrders(1);
 //await ReceiveAndProcessPizzaOrders(5);

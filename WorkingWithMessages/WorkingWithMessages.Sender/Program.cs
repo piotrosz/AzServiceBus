@@ -10,58 +10,48 @@ using WorkingWithMessages.MessageEntities;
 
 const string queueName = "workingwithmessages";
 
-string connectionString = Settings.GetConnectionString(Assembly.GetExecutingAssembly());
+var connectionString = Settings.GetConnectionString(Assembly.GetExecutingAssembly());
+
+await using var serviceBusClient = new ServiceBusClient(connectionString);
 
 AnsiConsole.MarkupLine("[white]Sender Console - Hit enter[/]");
 AnsiConsole.Prompt(new TextPrompt<string>("").AllowEmpty());
 
-//ToDo: Comment in the appropriate method
+//TODO: Comment in the appropriate method
 
-//await SendTextString("The quick brown fox jumps over the lazy dog");
+//await SendTextString("The quick brown fox jumps over the lazy dog", CancellationToken.None, serviceBusClient);
 
-//await SendPizzaOrderAsync();
-
-//await SendControlMessageAsync();
-
-//await SendPizzaOrderListAsMessagesAsync();
-        
-await SendPizzaOrderListAsBatchAsync();
-
-//await SendTextStringAsMessagesAsync("The quick brown fox jumps over the lazy dog");
-
-//await SendTextStringAsBatchAsync("The quick brown fox jumps over the lazy dog");
-
+await SendPizzaOrderAsync(serviceBusClient, CancellationToken.None);
+// await SendControlMessageAsync(serviceBusClient, CancellationToken.None);
+// await SendPizzaOrderListAsMessagesAsync(serviceBusClient, CancellationToken.None);
+// await SendPizzaOrderListAsBatchAsync(serviceBusClient, CancellationToken.None);
+// await SendTextStringAsMessagesAsync(serviceBusClient, "The quick brown fox jumps over the lazy dog", CancellationToken.None);
+// await SendTextStringAsBatchAsync(serviceBusClient, "The quick brown fox jumps over the lazy dog", CancellationToken.None);
 
 AnsiConsole.MarkupLine("[white]Sender Console - Complete[/]");
 AnsiConsole.Prompt(new TextPrompt<string>("").AllowEmpty());
 
 return;
 
-async Task SendTextString(string text)
+async Task SendTextString(string text, CancellationToken cancellationToken, ServiceBusClient client)
 {
     AnsiConsole.MarkupLine("[cyan]SendTextStringAsMessagesAsync[/]");
-
-    await using var client = new ServiceBusClient(connectionString);
+    
     var sender = client.CreateSender(queueName);
 
     AnsiConsole.Markup("[lime]Sending...[/]");
 
     var message = new ServiceBusMessage(Encoding.UTF8.GetBytes(text));
-    await sender.SendMessageAsync(message);
+    await sender.SendMessageAsync(message, cancellationToken);
     AnsiConsole.MarkupLine("[lime]Done![/]");
 
     AnsiConsole.WriteLine();
-
     await sender.CloseAsync();
 }
 
-
-async Task SendTextStringAsMessagesAsync(string text)
-{
+async Task SendTextStringAsMessagesAsync(ServiceBusClient client, string text, CancellationToken cancellationToken)
+{  
     AnsiConsole.MarkupLine("[cyan]SendTextStringAsMessagesAsync[/]");
-
-    // Create a client
-    await using var client = new ServiceBusClient(connectionString);
     var sender = client.CreateSender(queueName);
 
     AnsiConsole.Markup("[lime]Sending:[/]");
@@ -82,39 +72,31 @@ async Task SendTextStringAsMessagesAsync(string text)
     await sender.CloseAsync();
 }
 
-async Task SendTextStringAsBatchAsync(string text)
+async Task SendTextStringAsBatchAsync(ServiceBusClient client, string text, CancellationToken cancellationToken)
 {
     AnsiConsole.MarkupLine("[cyan]SendTextStringAsBatchAsync[/]");
 
-    await using var client = new ServiceBusClient(connectionString);
     var sender = client.CreateSender(queueName);
 
     AnsiConsole.Markup("[lime]Sending:[/]");
-    
-    var messageList = new List<ServiceBusMessage>();
+    var messageList = text
+        .ToCharArray()
+        .Select(letter => new ServiceBusMessage { Subject = letter.ToString() })
+        .ToList();
 
-    foreach (var letter in text.ToCharArray())
-    {
-        var message = new ServiceBusMessage
-        {
-            Subject = letter.ToString()
-        };
-
-        messageList.Add(message);
-
-    }    await sender.SendMessagesAsync(messageList);
+    await sender.SendMessagesAsync(messageList);
 
     AnsiConsole.WriteLine();
     AnsiConsole.WriteLine();
 
-    await sender.CloseAsync();
+    await sender.CloseAsync(cancellationToken);
 }
 
-async Task SendControlMessageAsync()
+async Task SendControlMessageAsync(ServiceBusClient client, CancellationToken cancellationToken)
 {
     AnsiConsole.MarkupLine("[cyan]SendControlMessageAsync[/]");
 
-    var message = new ServiceBusMessage()
+    var message = new ServiceBusMessage
     {
         MessageId = "Control"
     };
@@ -122,21 +104,20 @@ async Task SendControlMessageAsync()
     message.ApplicationProperties.Add("SystemId", 1462);
     message.ApplicationProperties.Add("Command", "Pending Restart");
     message.ApplicationProperties.Add("ActionTime", DateTime.UtcNow.AddHours(2));
-
-    await using var client = new ServiceBusClient(connectionString);
+    
     var sender = client.CreateSender(queueName);
     AnsiConsole.Markup("[lime]Sending control message...[/]");
-    await sender.SendMessageAsync(message);
+    await sender.SendMessageAsync(message, cancellationToken);
     AnsiConsole.MarkupLine("[lime]Done![/]");
     AnsiConsole.WriteLine();
-    await sender.CloseAsync();
+    await sender.CloseAsync(cancellationToken);
 }
 
-async Task SendPizzaOrderAsync()
+async Task SendPizzaOrderAsync(ServiceBusClient client, CancellationToken cancellationToken)
 {
     AnsiConsole.MarkupLine("[cyan]SendPizzaOrderAsync[/]");
 
-    var order = new PizzaOrder()
+    var order = new PizzaOrder
     {
         CustomerName = "Alan Smith",
         Type = "Hawaiian",
@@ -150,22 +131,20 @@ async Task SendPizzaOrderAsync()
         MessageId = "PizzaOrder",
         ContentType = "application/json"
     };
-
-    await using var client = new ServiceBusClient(connectionString);
+    
     var sender = client.CreateSender(queueName);
     AnsiConsole.Markup("[lime]Sending order...[/]");
-    await sender.SendMessageAsync(message);
+    await sender.SendMessageAsync(message, cancellationToken);
     AnsiConsole.MarkupLine("[lime]Done![/]");
     AnsiConsole.WriteLine();
-    await sender.CloseAsync();
+    await sender.CloseAsync(cancellationToken);
 }
 
-async Task SendPizzaOrderListAsMessagesAsync()
+async Task SendPizzaOrderListAsMessagesAsync(ServiceBusClient client, CancellationToken cancellationToken)
 {
     AnsiConsole.MarkupLine("[cyan]SendPizzaOrderListAsMessagesAsync[/]");
 
     var pizzaOrderList = GetPizzaOrderList();
-    await using var client = new ServiceBusClient(connectionString);
     var sender = client.CreateSender(queueName);
 
     AnsiConsole.MarkupLine("[yellow]Sending...[/]");
@@ -180,21 +159,20 @@ async Task SendPizzaOrderListAsMessagesAsync()
             Subject = "PizzaOrder",
             ContentType = "application/json"
         };
-        await sender.SendMessageAsync(message);
+        await sender.SendMessageAsync(message, cancellationToken);
     }
-    await sender.CloseAsync();
+    await sender.CloseAsync(cancellationToken);
     AnsiConsole.MarkupLineInterpolated($"[lime]Sent {pizzaOrderList.Count} orders! - Time: {watch.ElapsedMilliseconds} milliseconds, that's {pizzaOrderList.Count / watch.Elapsed.TotalSeconds} messages per second.[/]");
 
     AnsiConsole.WriteLine();
     AnsiConsole.WriteLine();
 }
 
-async Task SendPizzaOrderListAsBatchAsync()
+async Task SendPizzaOrderListAsBatchAsync(ServiceBusClient client,CancellationToken cancellationToken)
 {
     AnsiConsole.MarkupLine("[cyan]SendPizzaOrderListAsBatchAsync[/]");
 
     var pizzaOrderList = GetPizzaOrderList();
-    await using var client = new ServiceBusClient(connectionString);
     var sender = client.CreateSender(queueName);
 
     var watch = Stopwatch.StartNew();
@@ -211,7 +189,8 @@ async Task SendPizzaOrderListAsBatchAsync()
         messageList.Add(message);    }
 
     AnsiConsole.MarkupLine("[yellow]Sending...[/]");
-    await sender.SendMessagesAsync(messageList);
+    // This sends messages in a batch
+    await sender.SendMessagesAsync(messageList, cancellationToken);
     await sender.CloseAsync();
 
     AnsiConsole.MarkupLineInterpolated($"[lime]Sent {pizzaOrderList.Count} orders! - Time: {watch.ElapsedMilliseconds} milliseconds, that's {pizzaOrderList.Count / watch.Elapsed.TotalSeconds} messages per second.[/]");
