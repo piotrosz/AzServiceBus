@@ -16,6 +16,8 @@ Operations on queues, topics and subscriptions (create, list, delete).
 
 ### Working with messages
 
+Send in batches, threads, 
+
 ### Message correlation
 
 Sends duplicate messages randomly.

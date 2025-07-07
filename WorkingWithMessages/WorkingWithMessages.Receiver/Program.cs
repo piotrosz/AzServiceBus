@@ -17,11 +17,11 @@ await RecreateQueueAsync();
 
 //Comment in the appropriate method
 
-await ReceiveAndProcessText(2);
+//await ReceiveAndProcessText(2);
 
 //await ReceiveAndProcessPizzaOrders(1);
 //await ReceiveAndProcessPizzaOrders(5);
-//await ReceiveAndProcessPizzaOrders(100);
+await ReceiveAndProcessPizzaOrders(100);
 
 //await ReceiveAndProcessControlMessage(1);
 
@@ -79,9 +79,9 @@ async Task ReceiveAndProcessControlMessage(int threads)
 
 async Task ReceiveAndProcessPizzaOrders(int threads)
 {
-    AnsiConsole.MarkupLine($"[cyan]ReceiveAndProcessPizzaOrders({ threads })[/]");
+    AnsiConsole.MarkupLine($"[cyan]ReceiveAndProcessPizzaOrders({threads})[/]");
     
-    var options = new ServiceBusProcessorOptions()
+    var options = new ServiceBusProcessorOptions
     {
         AutoCompleteMessages = false,
         MaxConcurrentCalls = threads,

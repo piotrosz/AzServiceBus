@@ -1,5 +1,4 @@
-﻿using System.Data.Common;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Reflection;
 using System.Text;
 using Azure.Messaging.ServiceBus;
@@ -11,22 +10,23 @@ using WorkingWithMessages.MessageEntities;
 const string queueName = "workingwithmessages";
 
 var connectionString = Settings.GetConnectionString(Assembly.GetExecutingAssembly());
-
 await using var serviceBusClient = new ServiceBusClient(connectionString);
 
 AnsiConsole.MarkupLine("[white]Sender Console - Hit enter[/]");
 AnsiConsole.Prompt(new TextPrompt<string>("").AllowEmpty());
 
 //TODO: Comment in the appropriate method
+// await SendTextString("The quick brown fox jumps over the lazy dog", CancellationToken.None, serviceBusClient);
 
-//await SendTextString("The quick brown fox jumps over the lazy dog", CancellationToken.None, serviceBusClient);
+// await SendPizzaOrder(serviceBusClient, CancellationToken.None);
 
-await SendPizzaOrderAsync(serviceBusClient, CancellationToken.None);
-// await SendControlMessageAsync(serviceBusClient, CancellationToken.None);
-// await SendPizzaOrderListAsMessagesAsync(serviceBusClient, CancellationToken.None);
-// await SendPizzaOrderListAsBatchAsync(serviceBusClient, CancellationToken.None);
-// await SendTextStringAsMessagesAsync(serviceBusClient, "The quick brown fox jumps over the lazy dog", CancellationToken.None);
-// await SendTextStringAsBatchAsync(serviceBusClient, "The quick brown fox jumps over the lazy dog", CancellationToken.None);
+// await SendControlMessage(serviceBusClient, CancellationToken.None);
+
+// await SendPizzaOrderListAsMessages(serviceBusClient, CancellationToken.None);
+await SendPizzaOrderListAsBatch(serviceBusClient, CancellationToken.None);
+
+// await SendTextStringAsMessages(serviceBusClient, "The quick brown fox jumps over the lazy dog", CancellationToken.None);
+// await SendTextStringAsBatch(serviceBusClient, "The quick brown fox jumps over the lazy dog", CancellationToken.None);
 
 AnsiConsole.MarkupLine("[white]Sender Console - Complete[/]");
 AnsiConsole.Prompt(new TextPrompt<string>("").AllowEmpty());
@@ -49,7 +49,7 @@ async Task SendTextString(string text, CancellationToken cancellationToken, Serv
     await sender.CloseAsync();
 }
 
-async Task SendTextStringAsMessagesAsync(ServiceBusClient client, string text, CancellationToken cancellationToken)
+async Task SendTextStringAsMessages(ServiceBusClient client, string text, CancellationToken cancellationToken)
 {  
     AnsiConsole.MarkupLine("[cyan]SendTextStringAsMessagesAsync[/]");
     var sender = client.CreateSender(queueName);
@@ -72,7 +72,7 @@ async Task SendTextStringAsMessagesAsync(ServiceBusClient client, string text, C
     await sender.CloseAsync();
 }
 
-async Task SendTextStringAsBatchAsync(ServiceBusClient client, string text, CancellationToken cancellationToken)
+async Task SendTextStringAsBatch(ServiceBusClient client, string text, CancellationToken cancellationToken)
 {
     AnsiConsole.MarkupLine("[cyan]SendTextStringAsBatchAsync[/]");
 
@@ -92,7 +92,7 @@ async Task SendTextStringAsBatchAsync(ServiceBusClient client, string text, Canc
     await sender.CloseAsync(cancellationToken);
 }
 
-async Task SendControlMessageAsync(ServiceBusClient client, CancellationToken cancellationToken)
+async Task SendControlMessage(ServiceBusClient client, CancellationToken cancellationToken)
 {
     AnsiConsole.MarkupLine("[cyan]SendControlMessageAsync[/]");
 
@@ -113,7 +113,7 @@ async Task SendControlMessageAsync(ServiceBusClient client, CancellationToken ca
     await sender.CloseAsync(cancellationToken);
 }
 
-async Task SendPizzaOrderAsync(ServiceBusClient client, CancellationToken cancellationToken)
+async Task SendPizzaOrder(ServiceBusClient client, CancellationToken cancellationToken)
 {
     AnsiConsole.MarkupLine("[cyan]SendPizzaOrderAsync[/]");
 
@@ -140,7 +140,7 @@ async Task SendPizzaOrderAsync(ServiceBusClient client, CancellationToken cancel
     await sender.CloseAsync(cancellationToken);
 }
 
-async Task SendPizzaOrderListAsMessagesAsync(ServiceBusClient client, CancellationToken cancellationToken)
+async Task SendPizzaOrderListAsMessages(ServiceBusClient client, CancellationToken cancellationToken)
 {
     AnsiConsole.MarkupLine("[cyan]SendPizzaOrderListAsMessagesAsync[/]");
 
@@ -155,7 +155,6 @@ async Task SendPizzaOrderListAsMessagesAsync(ServiceBusClient client, Cancellati
         var jsonPizzaOrder = JsonConvert.SerializeObject(pizzaOrder);
         var message = new ServiceBusMessage(Encoding.UTF8.GetBytes(jsonPizzaOrder))
         {
-            
             Subject = "PizzaOrder",
             ContentType = "application/json"
         };
@@ -168,7 +167,7 @@ async Task SendPizzaOrderListAsMessagesAsync(ServiceBusClient client, Cancellati
     AnsiConsole.WriteLine();
 }
 
-async Task SendPizzaOrderListAsBatchAsync(ServiceBusClient client,CancellationToken cancellationToken)
+async Task SendPizzaOrderListAsBatch(ServiceBusClient client,CancellationToken cancellationToken)
 {
     AnsiConsole.MarkupLine("[cyan]SendPizzaOrderListAsBatchAsync[/]");
 
