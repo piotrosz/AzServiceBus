@@ -33,3 +33,7 @@ Subscriptions with different SQL filters.
 - Receiver can handle message or send to dead letter queue on error.
 Creates queue and forwarding queue.
 - Dead letter receiver 
+
+# Topic chat
+
+Multiple users can send and receive messages.

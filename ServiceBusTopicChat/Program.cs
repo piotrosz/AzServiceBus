@@ -33,12 +33,11 @@ var sender = topicClient.CreateSender(topicName);
 
 await using var processor = topicClient.CreateProcessor(topicName, userName);
 
-processor.ProcessMessageAsync += MessageHandler;
-processor.ProcessErrorAsync += ErrorHandler;
+processor.ProcessMessageAsync += HandleMessage;
+processor.ProcessErrorAsync += HandleError;
 
 Console.WriteLine("Start processing...");
 await processor.StartProcessingAsync();
-
 
 try
 {
@@ -47,7 +46,7 @@ try
 
     while (true)
     {
-        string text = Console.ReadLine() ?? "";
+        var text = Console.ReadLine() ?? "";
         if (text.Equals("exit"))
         {
             break;
@@ -68,14 +67,16 @@ finally
     await sender.CloseAsync();
 }
 
-static async Task MessageHandler(ProcessMessageEventArgs args)
+return;
+
+static async Task HandleMessage(ProcessMessageEventArgs args)
 {
-    string body = args.Message.Body.ToString();
+    var body = args.Message.Body.ToString();
     Console.WriteLine($"{args.Message.ApplicationProperties["UserName"]}> {body}");
     await args.CompleteMessageAsync(args.Message);
 }
 
-static Task ErrorHandler(ProcessErrorEventArgs args)
+static Task HandleError(ProcessErrorEventArgs args)
 {
     Console.WriteLine(args.Exception.ToString());
     return Task.CompletedTask;

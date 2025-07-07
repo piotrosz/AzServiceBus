@@ -1,7 +1,8 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
+    <UserSecretsId>e5bb4d06-d963-41e5-849e-443e453e8887</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
