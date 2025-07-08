@@ -1,6 +1,6 @@
-## Azure Service Bus examples
+# Azure Service Bus examples
 
-### Configure Azure ServiceBus connection string
+## Configure Azure ServiceBus connection string
 
 using user secrets:
 ```bash
@@ -10,23 +10,23 @@ dotnet user-secrets set "ServiceBusConnectionString" "[connection string value]"
 
 or `appconfig.json` in project folder.
 
-### Administration
+## Administration
 
 Operations on queues, topics and subscriptions (create, list, delete).
 
-### Working with messages
+## Working with messages
 
 Send in batches, threads, 
 
-### Message correlation
+## Message correlation
 
 Sends duplicate messages randomly.
 
-### Subscription rules
+## Subscription rules
 
 Subscriptions with different SQL filters.
 
-### Error handling
+## Error handling
 
 3 console apps:
 - Sender
@@ -34,15 +34,15 @@ Subscriptions with different SQL filters.
 Creates queue and forwarding queue.
 - Dead letter receiver 
 
-# Topic chat
+## Topic chat
 
 Multiple users can send and receive messages.
 
-# QueueSendReceive
+## QueueSendReceive
 
 Simple example of sending and receiving messages in a queue.
 
-# RFID checkout 
+## RFID checkout 
 
 This code is part of a simulated RFID checkout system using Azure Service Bus for messaging. It represents the checkout counter that receives RFID tag messages from a tag reader and processes them to calculate the customer's bill.
 
