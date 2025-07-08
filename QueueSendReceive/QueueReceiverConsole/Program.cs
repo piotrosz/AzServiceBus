@@ -17,7 +17,7 @@ var messages = receiver.ReceiveMessagesAsync();
 await foreach (var message in messages)
 {
     var text = Encoding.UTF8.GetString(message.Body);
-    Console.WriteLine($"Received: { text }");
+    Console.WriteLine($"Received: {text}");
 }
 
 Console.WriteLine("Press enter to exit.");

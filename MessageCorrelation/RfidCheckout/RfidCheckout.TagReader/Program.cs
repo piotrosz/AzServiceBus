@@ -19,11 +19,13 @@ var orderItems = new RfidTag[]
         new("Ball", 4.99),
         new("Whistle", 1.95),
         new("Bat", 12.99),
-        new("Bat 2", 13.99),
+        new("Bat", 12.99),
+        new("Gloves", 7.99),
         new("Gloves", 7.99),
         new("Cap", 9.99),
+        new("Cap", 9.99),
         new("Shirt", 14.99),
-        new("Shirt 2",  15.99),
+        new("Shirt",  14.99),
 };
 
 // Display the order data.

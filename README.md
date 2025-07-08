@@ -37,3 +37,22 @@ Creates queue and forwarding queue.
 # Topic chat
 
 Multiple users can send and receive messages.
+
+# QueueSendReceive
+
+Simple example of sending and receiving messages in a queue.
+
+# RFID checkout 
+
+This code is part of a simulated RFID checkout system using Azure Service Bus for messaging. It represents the checkout counter that receives RFID tag messages from a tag reader and processes them to calculate the customer's bill.
+
+The solution consists of two main components:
+1.	RfidCheckout.TagReader: Simulates an RFID tag scanner that reads product tags and sends them as messages to Azure Service Bus.
+2.	RfidCheckout.Checkout: Receives these messages and processes them to build a customer's bill.
+Ke
+
+You can experiment with duplicates detection and message sessions.	
+
+https://learn.microsoft.com/en-us/azure/service-bus-messaging/message-sessions
+
+https://learn.microsoft.com/en-us/azure/service-bus-messaging/duplicate-detection

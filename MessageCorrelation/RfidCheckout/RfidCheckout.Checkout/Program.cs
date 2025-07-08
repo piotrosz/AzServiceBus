@@ -8,9 +8,9 @@ using System.Text;
 using static System.Console;
 using Spectre.Console;
 
-int ReceivedCount = 0;
-double BillTotal = 0.0;
-bool UseMessageSessions = false;
+var ReceivedCount = 0;
+var BillTotal = 0.0;
+var UseMessageSessions = false;
 
 WriteLine("Checkout Console (receives messages)");
 
@@ -29,28 +29,30 @@ if (await managementClient.QueueExistsAsync(queueName))
 var createQueueOptions = new CreateQueueOptions(queueName)
 {
     // Comment in to require duplicate detection
+
     //RequiresDuplicateDetection = true,
     //DuplicateDetectionHistoryTimeWindow = TimeSpan.FromMinutes(10),
 
     // Comment in to require sessions
+
     //RequiresSession = true
 };
 
 WriteLine("Creating queue...");
 await managementClient.CreateQueueAsync(createQueueOptions);
 
+await using var queueClient = new ServiceBusClient(connectionString);
+
 if (!UseMessageSessions)
 {
-    await using var queueClient = new ServiceBusClient(connectionString);
-   
     var processor = queueClient.CreateProcessor(queueName);
-    processor.ProcessMessageAsync += HandleMessage;
+
+    processor.ProcessMessageAsync += ProcessOrderMessage;
     processor.ProcessErrorAsync += HandleMessageExceptions;
 
     await processor.StartProcessingAsync();
 
     WriteLine("Receiving tag read messages...");
-    ForegroundColor = ConsoleColor.Yellow;
     ReadLine();
     await processor.StopProcessingAsync();
     await processor.CloseAsync();
@@ -60,15 +62,13 @@ if (!UseMessageSessions)
 }
 else
 {
-    await using var queueClient = new ServiceBusClient(connectionString);
-
     var sessionProcessorOptions = new ServiceBusSessionProcessorOptions
     {
         AutoCompleteMessages = false
     };
     await using var sessionProcessor = queueClient.CreateSessionProcessor(queueName, sessionProcessorOptions);
 
-    sessionProcessor.ProcessMessageAsync += ProcessSessionMessageHandler;
+    sessionProcessor.ProcessMessageAsync += ProcessOrderSessionMessage;
     sessionProcessor.ProcessErrorAsync += HandleMessageExceptions;
 
     await sessionProcessor.StartProcessingAsync();
@@ -76,9 +76,8 @@ else
 
 return;
 
-Task HandleMessage(ProcessMessageEventArgs message)
+Task ProcessOrderMessage(ProcessMessageEventArgs message)
 {
-    // Process the order message
     var rfidJson = Encoding.UTF8.GetString(message.Message.Body);
     var rfidTag = JsonConvert.DeserializeObject<RfidTag>(rfidJson);
 
@@ -90,17 +89,13 @@ Task HandleMessage(ProcessMessageEventArgs message)
     return Task.CompletedTask;
 }
 
-async Task ProcessSessionMessageHandler(ProcessSessionMessageEventArgs  message)
+async Task ProcessOrderSessionMessage(ProcessSessionMessageEventArgs  message)
 {
     WriteLine("Accepting a message session...");
-    ForegroundColor = ConsoleColor.White;
-
-    ForegroundColor = ConsoleColor.Cyan;
     WriteLine($"Accepted session: {message.Message.SessionId}");
-    ForegroundColor = ConsoleColor.Yellow;
 
-    int receivedCount = 0;
-    double billTotal = 0.0;
+    var receivedCount = 0;
+    var billTotal = 0.0;
 
     // Process the order message
     var rfidJson = Encoding.UTF8.GetString(message.Message.Body);
@@ -113,7 +108,6 @@ async Task ProcessSessionMessageHandler(ProcessSessionMessageEventArgs  message)
     await message.CompleteMessageAsync(message.Message);
 
     AnsiConsole.MarkupInterpolated($"[green]Bill customer ${billTotal} for {receivedCount} items.[/]");
-
 }
 
 Task HandleMessageExceptions(ProcessErrorEventArgs arg)
