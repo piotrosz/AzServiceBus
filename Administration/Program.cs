@@ -100,7 +100,7 @@ do
     }
     catch (Exception ex)
     {
-        AnsiConsole.WriteException(ex);
+        AnsiConsole.WriteLine(ex.ToString());
     }
 } while (!done);
 

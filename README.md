@@ -8,6 +8,12 @@ dotnet user-secrets init
 dotnet user-secrets set "ServiceBusConnectionString" "[connection string value]" 
 ```
 
+When using Service Bus emulator
+```bash
+dotnet user-secrets set "ServiceBusConnectionString" "Endpoint=sb://localhost;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=SAS_KEY_VALUE;UseDevelopmentEmulator=true;"
+
+```
+
 or `appconfig.json` in project folder.
 
 ## Administration
