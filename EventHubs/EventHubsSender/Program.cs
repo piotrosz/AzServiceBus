@@ -5,7 +5,7 @@ using Azure.Messaging.EventHubs.Producer;
 using System.Text;
 
 // number of events to be sent to the event hub
-var numOfEvents = 4;
+const int numOfEvents = 4;
 
 // The Event Hubs client types are safe to cache and use as a singleton for the lifetime
 // of the application, which is best practice when events are being published or read regularly.
@@ -23,7 +23,8 @@ using var eventBatch = await producerClient.CreateBatchAsync();
 
 for (var i = 1; i <= numOfEvents; i++)
 {
-    if (!eventBatch.TryAdd(new EventData(Encoding.UTF8.GetBytes($"Test Event {i}"))))
+    var eventData = new EventData(Encoding.UTF8.GetBytes($"Test Event {i}"));
+    if (!eventBatch.TryAdd(eventData))
     {
         // if it is too large for the batch
         throw new Exception($"Event {i} is too large for the batch and cannot be sent.");
