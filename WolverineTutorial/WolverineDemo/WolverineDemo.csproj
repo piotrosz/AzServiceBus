@@ -15,6 +15,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <PackageReference Include="JetBrains.Annotations" Version="2025.2.4" />
       <PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.2" />
       <PackageReference Include="WolverineFx" Version="5.12.1" />
     </ItemGroup>

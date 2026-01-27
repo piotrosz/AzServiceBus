@@ -11,7 +11,7 @@ public class BgPublisher(IMessageBus messageBus) : BackgroundService
         {
             await messageBus.SendAsync(
                 new CreateCustomerCommand(Guid.NewGuid(), Guid.NewGuid().ToString()));
-            await Task.Delay(2000, stoppingToken);
+            await Task.Delay(3000, stoppingToken);
         }
     }
 }
