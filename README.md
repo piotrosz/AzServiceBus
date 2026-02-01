@@ -62,3 +62,9 @@ You can experiment with duplicates detection and message sessions.
 https://learn.microsoft.com/en-us/azure/service-bus-messaging/message-sessions
 
 https://learn.microsoft.com/en-us/azure/service-bus-messaging/duplicate-detection
+
+## Links
+
+https://learn.microsoft.com/en-us/dotnet/api/overview/azure/messaging.servicebus-readme?view=azure-dotnet#registering-with-aspnet-core-dependency-injection
+
+https://learn.microsoft.com/en-us/cli/azure/servicebus?view=azure-cli-latest
