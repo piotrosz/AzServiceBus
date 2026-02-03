@@ -62,6 +62,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Administration", "Administr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AzServiceBusAdministration", "Administration\AzServiceBusAdministration.csproj", "{7DEB9C05-C492-4FA9-B2A1-F1D2480762C5}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApplication1", "WebApplication1\WebApplication1.csproj", "{32B00B27-BED5-4F5F-B000-603187C863AC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -140,6 +142,10 @@ Global
 		{7DEB9C05-C492-4FA9-B2A1-F1D2480762C5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7DEB9C05-C492-4FA9-B2A1-F1D2480762C5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7DEB9C05-C492-4FA9-B2A1-F1D2480762C5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{32B00B27-BED5-4F5F-B000-603187C863AC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{32B00B27-BED5-4F5F-B000-603187C863AC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{32B00B27-BED5-4F5F-B000-603187C863AC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{32B00B27-BED5-4F5F-B000-603187C863AC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
