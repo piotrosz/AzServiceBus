@@ -65,6 +65,8 @@ https://learn.microsoft.com/en-us/azure/service-bus-messaging/duplicate-detectio
 
 ## Links
 
+### How to integrate with ASP.NET DI:
 https://learn.microsoft.com/en-us/dotnet/api/overview/azure/messaging.servicebus-readme?view=azure-dotnet#registering-with-aspnet-core-dependency-injection
 
+### Azure CLI:
 https://learn.microsoft.com/en-us/cli/azure/servicebus?view=azure-cli-latest
